@@ -5,13 +5,13 @@ import {
 } from "react-router-dom";
 
 
-const PrivateRoute = ({ component: Component, role, ...rest }) => {
+const PrivateRoute = ({ component: Component, user, role, ...rest }) => {
   // verify that the current user has role and whatnot
   return (
   <Route
     {...rest}
     render={props =>
-      true ? (
+      !!user && (role || true) ? (
         <Component {...props} />
       ) : (
         <Redirect

@@ -1,16 +1,33 @@
-import React from 'react'
-import { BrowserRouter, Route } from "react-router-dom";
-import { Landing, Login, Admin } from './pages'
+import React, { Component } from 'react'
+import { BrowserRouter, Route } from 'react-router-dom'
+import { Landing, Login, AppShell } from './pages'
 import PrivateRoute from './components/PrivateRoute'
+import firebase from 'firebase/app'
+import 'firebase/auth'
 
-const AppRouter = () => (
-  <BrowserRouter>
-    <div>
-      <Route path="/" exact component={Login} />
-      <Route path="/login/" component={Login} />
-      <PrivateRoute path="/admin/" component={Admin} />
-    </div>
-  </BrowserRouter>
-)
+class AppRouter extends Component {
+  state = {
+    user: null
+  }
+  
+  componentDidMount = () => {
+    firebase.auth().onAuthStateChanged(user => {
+      this.setState({ user })
+    })
+  }
+
+  render = () => {
+    const { user } = this.state
+    return (
+      <BrowserRouter>
+        <div>
+          <Route path="/" exact component={Login} />
+          <Route path="/login/" component={Login} />
+          <PrivateRoute user={user} path="/app/" component={AppShell} />
+        </div>
+      </BrowserRouter>
+    )
+  }
+}
 
 export default AppRouter

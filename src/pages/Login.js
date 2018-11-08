@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import Typography from '@material-ui/core/Typography';
@@ -16,6 +14,9 @@ import {
 } from 'react-social-login-buttons'
 import firebase from 'firebase/app'
 import 'firebase/auth'
+import {
+  Redirect
+} from "react-router-dom";
 
 const styles = theme => ({
   main: {
@@ -39,25 +40,33 @@ const styles = theme => ({
   }
 })
 class Login extends Component {
+  state = {
+    redirectTo: null
+  }
+
   componentDidMount() {
-    // firebase.auth().onAuthStateChanged(user => {
-    //   if (user) {
-    //   }
-    // })
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        this.setState({redirectTo: {pathname: '/app'}})
+      }
+    })
   }
 
   loginWithFacebook = () => {
     const facebookProvider = new firebase.auth.FacebookAuthProvider()
-    firebase.auth().signInWithRedirect(facebookProvider)
+    firebase.auth().signInWithPopup(facebookProvider)
   }
 
   loginWithGoogle = () => {
     const googleProvider = new firebase.auth.GoogleAuthProvider()
-    firebase.auth().signInWithRedirect(googleProvider)
+    firebase.auth().signInWithPopup(googleProvider)
   }
 
   render = () => {
     const { classes } = this.props
+    const { redirectTo } = this.state
+
+    if (redirectTo) return <Redirect to={redirectTo}/>
 
     const socialButtonSytle = {
       width: '90%',
@@ -91,19 +100,16 @@ class Login extends Component {
               <InputLabel htmlFor="email">digite seu e-mail</InputLabel>
               <Input id="email" name="email" autoComplete="email" autoFocus />
             </FormControl>
-            <FormControl margin="normal" required fullWidth>
+            <FormControl margin="none" required fullWidth>
               <InputLabel htmlFor="password">digite sua senha</InputLabel>
               <Input
                 name="password"
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                className="mb4" 
               />
             </FormControl>
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
               type="submit"
               fullWidth

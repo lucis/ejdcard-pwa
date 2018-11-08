@@ -1,15 +1,11 @@
 {
-  "loggedUsers": {
-    "authId": "string",
-    "authorized": "boolean",
-    "name": "string",
-    "pic": "string"
-  },
   "users": {
-    "authId": "string",
-    "roles": "enum",
+    "authUid": "string",
+    "authorized": "boolean",
+    "roles": "array<enum>",
     "name": "string",
     "pic": "string",
+    "provider": "string",
     "lastLogin": "number",
     "isAdmin": "boolean",
     "createdAt": "number"
@@ -27,7 +23,7 @@
     "type": "enum",
     "timestamp": "number",
     "card": "number",
-    "station": "string",
+    "userId": "string",
     "balanceBefore": "number",
     "balanceAfter": "number"
   }
