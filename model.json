@@ -1,0 +1,34 @@
+{
+  "loggedUsers": {
+    "authId": "string",
+    "authorized": "boolean",
+    "name": "string",
+    "pic": "string"
+  },
+  "users": {
+    "authId": "string",
+    "roles": "enum",
+    "name": "string",
+    "pic": "string",
+    "lastLogin": "number",
+    "isAdmin": "boolean",
+    "createdAt": "number"
+  },
+  "cards":{
+    "number": "string",
+    "balance": "number",
+    "active": "boolean",
+    "owner": {
+      "name": "string",
+      "cellphone": "string"
+    }
+  },
+  "logs": {
+    "type": "enum",
+    "timestamp": "number",
+    "card": "number",
+    "station": "string",
+    "balanceBefore": "number",
+    "balanceAfter": "number"
+  }
+}
