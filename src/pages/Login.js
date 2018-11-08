@@ -1,17 +1,21 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Button from '@material-ui/core/Button'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import FormControl from '@material-ui/core/FormControl'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
-import Input from '@material-ui/core/Input'
-import InputLabel from '@material-ui/core/InputLabel'
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import Typography from '@material-ui/core/Typography';
+import withStyles from '@material-ui/core/styles/withStyles';
 import Paper from '@material-ui/core/Paper'
-import withStyles from '@material-ui/core/styles/withStyles'
-import FacebookLogin from 'react-facebook-login'
-import GoogleLogin from 'react-google-login';
+import {
+  FacebookLoginButton,
+  GoogleLoginButton
+} from 'react-social-login-buttons'
+import firebase from 'firebase/app'
+import 'firebase/auth'
 
 const styles = theme => ({
   main: {
@@ -22,8 +26,8 @@ const styles = theme => ({
     [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
       width: 400,
       marginLeft: 'auto',
-      marginRight: 'auto',
-    },
+      marginRight: 'auto'
+    }
   },
   paper: {
     marginTop: theme.spacing.unit * 8,
@@ -31,86 +35,93 @@ const styles = theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
-      .spacing.unit * 3}px`,
-  },
-  avatar: {
-    margin: theme.spacing.unit,
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing.unit,
-  },
-  submit: {
-    marginTop: theme.spacing.unit * 3,
-  },
-  pass: {
-    boxSizing: 'unset',
-  },
+      .spacing.unit * 3}px`
+  }
 })
+class Login extends Component {
+  componentDidMount() {
+    // firebase.auth().onAuthStateChanged(user => {
+    //   if (user) {
+    //   }
+    // })
+  }
 
-function Login(props) {
-  const { classes } = props
+  loginWithFacebook = () => {
+    const facebookProvider = new firebase.auth.FacebookAuthProvider()
+    firebase.auth().signInWithRedirect(facebookProvider)
+  }
 
-  return (
-    <main className={classes.main}>
-      <CssBaseline />
-      <Paper className={classes.paper}>
-        <div className="w-90 pa2">
-          <img src={require('../images/logo_largo_05x.png')} alt="EJD Card" />
-        </div>
-        {/* <Typography component="h1" variant="h5">
-          EJDCard
-        </Typography> */}
-        <FacebookLogin
-          appId="1088597931155576"
-          autoLoad={true}
-          fields="name,email,picture"
-          icon="fa-facebook"
-          onClick={() => {}}
-          callback={() => {}}
-        />
-        <GoogleLogin
-          clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
-          buttonText="Login"
-          onSuccess={() => {}}
-          onFailure={() => {}}
-        />
-        <form className={classes.form}>
-          <FormControl margin="normal" required fullWidth>
-            <InputLabel htmlFor="email">digite seu email</InputLabel>
-            <Input id="email" name="email" autoComplete="email" autoFocus />
-          </FormControl>
-          <FormControl margin="normal" required fullWidth>
-            <InputLabel htmlFor="password">digite sua senha</InputLabel>
-            <Input
-              name="password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-          </FormControl>
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
+  loginWithGoogle = () => {
+    const googleProvider = new firebase.auth.GoogleAuthProvider()
+    firebase.auth().signInWithRedirect(googleProvider)
+  }
+
+  render = () => {
+    const { classes } = this.props
+
+    const socialButtonSytle = {
+      width: '90%',
+      fontFamily: 'Product Sans',
+      textAlign: 'center',
+      marginTop: '1rem'
+    }
+    return (
+      <main className={classes.main}>
+        <CssBaseline />
+        <Paper className={classes.paper}>
+          <div className="w-90 pa2">
+            <img src={require('../images/logo_largo_05x.png')} alt="EJD Card" />
+          </div>
+          <Typography variant="subtitle1">Faça login para utilizar</Typography>
+          <FacebookLoginButton
+            style={socialButtonSytle}
+            onClick={this.loginWithFacebook}
           >
-            Login
-          </Button>
-        </form>
-      </Paper>
-    </main>
-  )
+            <span className="tc pl2">Entre com Facebook</span>
+          </FacebookLoginButton>
+          <GoogleLoginButton
+            style={socialButtonSytle}
+            onClick={this.loginWithGoogle}
+          >
+            <span className="tc pl2 ">Entre com Google</span>
+          </GoogleLoginButton>
+          <Typography variant="subtitle1" className="pt2">ou</Typography>
+          <form className={classes.form}>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="email">digite seu e-mail</InputLabel>
+              <Input id="email" name="email" autoComplete="email" autoFocus />
+            </FormControl>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="password">digite sua senha</InputLabel>
+              <Input
+                name="password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+              />
+            </FormControl>
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Login
+            </Button>
+          </form>
+        </Paper>
+      </main>
+    )
+  }
 }
 
 Login.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 }
 
 export default withStyles(styles)(Login)
