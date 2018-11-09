@@ -19,7 +19,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import { Route, Redirect } from 'react-router-dom'
 import firebase from 'firebase/app'
 import 'firebase/auth'
-import { Admin } from './'
+import { Admin, Home } from './'
 
 const drawerWidth = 240
 
@@ -141,15 +141,9 @@ class AppShell extends React.Component {
             >
               <MenuIcon />
             </IconButton>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              className={classes.title}
-            >
-              AppShell
-            </Typography>
+            <div className="w-40">
+              <img src={require('../images/logo_largo_05x_with_stroke.png')} alt="EJD Card"/>
+            </div>
           </Toolbar>
         </AppBar>
         <Drawer
@@ -161,6 +155,7 @@ class AppShell extends React.Component {
             )
           }}
           open={this.state.open}
+          onClose={this.handleDrawerClose}
         >
           <div className={classes.toolbarIcon}>
             <Typography
@@ -189,10 +184,11 @@ class AppShell extends React.Component {
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           <Route path={`${match.path}admin`} component={Admin} />
+          <Route path={`${match.path}home`} component={Home} />
           <Route
             exact
             path={match.path}
-            render={() => <Redirect to={{pathname: `${match.path}admin`}}/>}
+            render={() => <Redirect to={{pathname: `${match.path}home`}}/>}
           />
         </main>
       </div>

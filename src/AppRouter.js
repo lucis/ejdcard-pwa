@@ -28,7 +28,7 @@ class AppRouter extends Component {
               <CircularProgress style={{top: '50%', left: '50%', position: 'absolute'}} />
             </div>
           )}
-          <Route path="/" exact component={Login} />
+          <Route path="/" exact component={Landing} />
           <Route path="/login/" component={Login} />
           <PrivateRoute user={user} path="/app/" component={AppShell} />
         </div>
