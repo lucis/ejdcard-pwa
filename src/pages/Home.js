@@ -23,52 +23,61 @@ const styles = {
   },
 }
 
-
 function Home(props) {
   const { classes } = props
 
-  const getOptionsForRoles = (roles) => {
-    const options = [{
-      title: 'Vender',
-      subtitle: 'Para lojinha ou lanchonete. Tenha cuidado!',
-      path: 'app/venda',
-      role: 'v'
-    },
-    {
-      title: 'Recarregar',
-      subtitle: 'Você deve receber dinheiro do usuário e adicionar crédito no seu cartão',
-      path: 'app/venda',
-      role: 'u'
-    },{
-      title: 'Cadastrar Cartão',
-      subtitle: 'É necessário o número do cartão, o nome e celular do titular, e o saldo inicial.',
-      path: 'app/cadastro',
-      role: 'c'
-    },
-    {
-      title: 'Consultar Saldo',
-      subtitle: 'Você só precisar do número do seu cartão e das duas letras iniciais de quem o cadastrou.',
-      path: 'app/consulta',
-      role: 'r'
-    }
-  ]
-  return options.map(({ title, subtitle}, key) => (
-    <Card className="pointer mt2 w5-ns" key={key}>
+  const getOptionsForRoles = roles => {
+    const options = [
+      {
+        title: 'Vender',
+        subtitle: 'Para lojinha ou lanchonete. Tenha cuidado!',
+        path: 'app/venda',
+        role: 'v',
+      },
+      {
+        title: 'Recarregar',
+        subtitle:
+          'Você deve receber dinheiro do usuário e adicionar crédito no seu cartão',
+        path: 'app/venda',
+        role: 'u',
+      },
+      {
+        title: 'Cadastrar Cartão',
+        subtitle:
+          'É necessário o número do cartão, o nome e celular do titular, e o saldo inicial.',
+        path: 'app/cadastro',
+        role: 'c',
+      },
+      {
+        title: 'Consultar Saldo',
+        subtitle:
+          'Você só precisar do número do seu cartão e das duas letras iniciais de quem o cadastrou.',
+        path: 'app/consulta',
+        role: 'r',
+      },
+      {
+        title: 'Administração',
+        subtitle:
+          'Você poderá autorizar usuários e ver estatísticas sobre o evento.',
+        path: 'app/consulta',
+        role: 'a',
+      },
+    ]
+    return options.map(({ title, subtitle }, key) => (
+      <Card className="pointer mt2 w5-ns" key={key}>
         <CardContent>
           <Typography variant="h5" component="h2">
             {title}
           </Typography>
-          <Typography component="p">
-            {subtitle}
-          </Typography>
+          <Typography component="p">{subtitle}</Typography>
         </CardContent>
       </Card>
-  ))
+    ))
   }
   return (
     <div>
       <Typography variant="h5" align="center" className="pt4-l">
-        Seja bem-vindo
+        <span>Seja bem-vindo, <span class="b">Luciano</span></span>
       </Typography>
       <Typography variant="subtitle1" align="center">
         Veja o que você pode fazer
