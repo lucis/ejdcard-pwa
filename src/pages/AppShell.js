@@ -19,7 +19,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import { Route, Redirect } from 'react-router-dom'
 import firebase from 'firebase/app'
 import 'firebase/auth'
-import { Admin, Home } from './'
+import { Admin, Home, Cadastro } from './'
 
 const drawerWidth = 240
 
@@ -183,8 +183,12 @@ class AppShell extends React.Component {
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
-          <Route path={`${match.path}admin`} component={Admin} />
           <Route path={`${match.path}home`} component={Home} />
+          <Route path={`${match.path}venda`} component={Admin} />
+          <Route path={`${match.path}recarda`} component={Admin} />
+          <Route path={`${match.path}cadastro`} component={Cadastro} />
+          <Route path={`${match.path}consulta`} component={Admin} />
+          <Route path={`${match.path}admin`} component={Admin} />
           <Route
             exact
             path={match.path}

@@ -38,7 +38,7 @@ function Home(props) {
         title: 'Recarregar',
         subtitle:
           'Você deve receber dinheiro do usuário e adicionar crédito no seu cartão',
-        path: 'app/venda',
+        path: 'app/recarga',
         role: 'u',
       },
       {
@@ -59,7 +59,7 @@ function Home(props) {
         title: 'Administração',
         subtitle:
           'Você poderá autorizar usuários e ver estatísticas sobre o evento.',
-        path: 'app/consulta',
+        path: 'app/admin',
         role: 'a',
       },
     ]
@@ -77,7 +77,7 @@ function Home(props) {
   return (
     <div>
       <Typography variant="h5" align="center" className="pt4-l">
-        <span>Seja bem-vindo, <span class="b">Luciano</span></span>
+        <span>Seja bem-vindo, <span className="b">Luciano</span></span>
       </Typography>
       <Typography variant="subtitle1" align="center">
         Veja o que você pode fazer
