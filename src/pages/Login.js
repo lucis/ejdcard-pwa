@@ -54,6 +54,10 @@ class Login extends Component {
 
   componentDidMount() {
     const { user: userFromContext, setUser } = this.props
+    // Remove the 'false' if too much login attempts are happening
+    if (false && userFromContext) {
+      return this.setState({redirectTo: {pathname: '/app'}})
+    }
     firebase.auth().onAuthStateChanged(async user => {
       if (user) {
         let userFromDb
