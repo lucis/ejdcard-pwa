@@ -18,6 +18,8 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import { Route, Redirect } from 'react-router-dom'
 import firebase from 'firebase/app'
+import { withUser } from '../contexts/AuthContext'
+
 import 'firebase/auth'
 import { Admin, Home, Cadastro } from './'
 
@@ -114,7 +116,7 @@ class AppShell extends React.Component {
   }
 
   render() {
-    const { classes, match } = this.props
+    const { classes, match, user: { roles } } = this.props
 
     return (
       <div className={classes.root}>
@@ -183,7 +185,7 @@ class AppShell extends React.Component {
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
-          <Route path={`${match.path}home`} component={Home} />
+          <Route path={`${match.path}home`} render={(props) => <Home {...props} roles={roles}/>} />
           <Route path={`${match.path}venda`} component={Admin} />
           <Route path={`${match.path}recarda`} component={Admin} />
           <Route path={`${match.path}cadastro`} component={Cadastro} />
@@ -204,4 +206,4 @@ AppShell.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(AppShell)
+export default withUser(withStyles(styles)(AppShell))

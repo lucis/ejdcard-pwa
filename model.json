@@ -1,10 +1,10 @@
 {
   "users": {
-    "authUid": "string",
+    "authId": "string",
     "authorized": "boolean",
     "roles": "array<enum>",
     "name": "string",
-    "pic": "string",
+    "picUrl": "string",
     "provider": "string",
     "lastLogin": "number",
     "isAdmin": "boolean",

@@ -12,11 +12,14 @@ import {
   FacebookLoginButton,
   GoogleLoginButton
 } from 'react-social-login-buttons'
-import firebase from 'firebase/app'
-import 'firebase/auth'
 import {
   Redirect
 } from "react-router-dom";
+import { withUser } from '../contexts/AuthContext'
+
+import firebase from 'firebase/app'
+import 'firebase/auth'
+require("firebase/firestore");
 
 const styles = theme => ({
   main: {
@@ -39,14 +42,48 @@ const styles = theme => ({
       .spacing.unit * 3}px`
   }
 })
+
+const db = firebase.firestore()
+const settings = {timestampsInSnapshots: true};
+db.settings(settings);
+
 class Login extends Component {
   state = {
     redirectTo: null
   }
 
   componentDidMount() {
-    firebase.auth().onAuthStateChanged(user => {
+    const { user: userFromContext, setUser } = this.props
+    firebase.auth().onAuthStateChanged(async user => {
       if (user) {
+        let userFromDb
+        const query = await db.collection('users').where('authId', '==', user.uid).limit(1).get()
+        if (query.empty){
+          const {
+            photoURL,
+            displayName,
+            email,
+            uid
+          } = user
+
+          const newUserData = {
+            authId: uid,
+            name: displayName,
+            email,
+            picUrl: photoURL,
+            authorized: false,
+            roles: "r",
+            lastLogin: Date.now(),
+            isAdmin: false,
+            createdAt: Date.now()
+          }
+          userFromDb = newUserData
+          await db.collection('users').doc(uid).set(newUserData)
+        } else {
+          query.forEach(snap => {userFromDb = snap.data()})
+          await db.collection('users').doc(user.uid).set({lastLogin: Date.now()}, {merge: true})
+        }
+        setUser(userFromDb)
         this.setState({redirectTo: {pathname: '/app'}})
       }
     })
@@ -54,12 +91,12 @@ class Login extends Component {
 
   loginWithFacebook = () => {
     const facebookProvider = new firebase.auth.FacebookAuthProvider()
-    firebase.auth().signInWithPopup(facebookProvider)
+    firebase.auth().signInWithRedirect(facebookProvider)
   }
 
   loginWithGoogle = () => {
     const googleProvider = new firebase.auth.GoogleAuthProvider()
-    firebase.auth().signInWithPopup(googleProvider)
+    firebase.auth().signInWithRedirect(googleProvider)
   }
 
   render = () => {
@@ -130,4 +167,4 @@ Login.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(Login)
+export default withUser(withStyles(styles)(Login))
