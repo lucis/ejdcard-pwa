@@ -14,10 +14,8 @@
     "number": "string",
     "balance": "number",
     "active": "boolean",
-    "owner": {
-      "name": "string",
-      "cellphone": "string"
-    }
+    "name": "string",
+    "cellphone": "string"
   },
   "logs": {
     "type": "enum",

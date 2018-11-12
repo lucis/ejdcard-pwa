@@ -123,13 +123,13 @@ class Login extends Component {
             style={socialButtonSytle}
             onClick={this.loginWithFacebook}
           >
-            <span className="tc pl2">Entre com Facebook</span>
+            <span className="tc pl2 f6">Entre com Facebook</span>
           </FacebookLoginButton>
           <GoogleLoginButton
             style={socialButtonSytle}
             onClick={this.loginWithGoogle}
           >
-            <span className="tc pl2 ">Entre com Google</span>
+            <span className="tc pl2 f6">Entre com Google</span>
           </GoogleLoginButton>
           <Typography variant="subtitle1" className="pt2">ou</Typography>
           <form className={classes.form}>

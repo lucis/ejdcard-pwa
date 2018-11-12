@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
+import { withRouter } from 'react-router-dom'
 
 const styles = {
   card: {
@@ -24,36 +25,36 @@ const styles = {
 }
 
 function Home(props) {
-  const { classes, roles } = props
-  console.log('rolas', roles)
+  const { classes, roles, history } = props
+
   const getOptionsForRoles = roles => {
     const options = [
       {
         title: 'Vender',
         subtitle: 'Para lojinha ou lanchonete. Tenha cuidado!',
-        path: 'app/venda',
-        role: 'v'
+        path: 'venda',
+        role: 'v',
       },
       {
         title: 'Recarregar',
         subtitle:
           'Você deve receber dinheiro do usuário e adicionar crédito no seu cartão',
-        path: 'app/recarga',
-        role: 'u'
+        path: 'recarga',
+        role: 'u',
       },
       {
         title: 'Cadastrar Cartão',
         subtitle:
           'É necessário o número do cartão, o nome e celular do titular, e o saldo inicial.',
-        path: 'app/cadastro',
-        role: 'c'
+        path: 'cadastro',
+        role: 'c',
       },
       {
         title: 'Consultar Saldo',
         subtitle:
           'Você só precisar do número do seu cartão e das duas letras iniciais de quem o cadastrou.',
-        path: 'app/consulta',
-        role: 'r'
+        path: 'consulta',
+        role: 'r',
       },
       {
         title: 'Administração',
@@ -65,8 +66,8 @@ function Home(props) {
     ]
     return options
       .filter(({ role }) => roles.includes(role))
-      .map(({ title, subtitle }, key) => (
-        <Card className="pointer mt2 w5-ns" key={key}>
+      .map(({ title, subtitle, path }, key) => (
+        <Card className="pointer mt2 w5-ns" key={key} onClick={() => {history.push(path)}}>
           <CardContent>
             <Typography variant="h5" component="h2">
               {title}
@@ -76,6 +77,7 @@ function Home(props) {
         </Card>
       ))
   }
+  
   return (
     <div>
       <Typography variant="h5" align="center" className="pt4-l">
@@ -96,4 +98,4 @@ Home.propTypes = {
   roles: PropTypes.string.isRequired
 }
 
-export default withStyles(styles)(Home)
+export default withRouter(withStyles(styles)(Home))

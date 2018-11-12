@@ -2,17 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import Paper from '@material-ui/core/Paper';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-// import AddressForm from './AddressForm';
-// import PaymentForm from './PaymentForm';
-// import Review from './Review';
+import CadastroForm from '../components/CadastroForm';
+import OpReview from '../components/OpReview';
 
 const styles = theme => ({
   appBar: {
@@ -51,24 +48,17 @@ const styles = theme => ({
   },
 });
 
-const steps = ['Shipping address', 'Payment details', 'Review your order'];
-
-function getStepContent(step) {
-  // switch (step) {
-  //   case 0:
-  //     return <AddressForm />;
-  //   case 1:
-  //     return <PaymentForm />;
-  //   case 2:
-  //     return <Review />;
-  //   default:
-  //     throw new Error('Unknown step');
-  // }
-}
+const steps = ['Dados do Cartão', 'Revisão'];
 
 class Cadastro extends React.Component {
   state = {
     activeStep: 0,
+    card: {
+      name: '',
+      number: null,
+      cellphone: '',
+      balance: ''
+    }
   };
 
   handleNext = () => {
@@ -89,20 +79,27 @@ class Cadastro extends React.Component {
     });
   };
 
+  onChangeField = field => e => {
+    this.setState({card: {...this.state.card, [field]: e.target.value }})
+  }
+
+  getStepContent = (step, card) => {
+    switch (step) {
+      case 0:
+        return <CadastroForm onChangeField={this.onChangeField} card={card}/>;
+      case 2:
+        return <OpReview />;
+      default:
+        throw new Error('Unknown step');
+    }
+  }
   render() {
     const { classes } = this.props;
-    const { activeStep } = this.state;
+    const { activeStep, card } = this.state;
 
     return (
       <React.Fragment>
         <CssBaseline />
-        <AppBar position="absolute" color="default" className={classes.appBar}>
-          <Toolbar>
-            <Typography variant="h6" color="inherit" noWrap>
-              Company name
-            </Typography>
-          </Toolbar>
-        </AppBar>
         <main className={classes.layout}>
           <Paper className={classes.paper}>
             <Typography component="h1" variant="h4" align="center">
@@ -128,7 +125,7 @@ class Cadastro extends React.Component {
                 </React.Fragment>
               ) : (
                 <React.Fragment>
-                  {getStepContent(activeStep)}
+                  {this.getStepContent(activeStep, card)}
                   <div className={classes.buttons}>
                     {activeStep !== 0 && (
                       <Button onClick={this.handleBack} className={classes.button}>
