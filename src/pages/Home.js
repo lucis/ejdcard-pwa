@@ -60,7 +60,7 @@ function Home(props) {
         title: 'Administração',
         subtitle:
           'Você poderá autorizar usuários e ver estatísticas sobre o evento.',
-        path: 'app/admin',
+        path: 'admin',
         role: 'a'
       }
     ]

@@ -71,7 +71,7 @@ class Login extends Component {
           } = user
 
           const newUserData = {
-            authId: uid,
+            uid,
             name: displayName,
             email,
             picUrl: photoURL,

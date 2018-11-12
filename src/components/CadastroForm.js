@@ -2,31 +2,7 @@ import React, { Fragment } from 'react'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import NumberFormat from 'react-number-format';
-
-const NumberFormatCustom = (props) => {
-  const { inputRef, onChange, ...other } = props;
-
-  return (
-    <NumberFormat
-      {...other}
-      getInputRef={inputRef}
-      onValueChange={values => {
-        onChange({
-          target: {
-            value: values.value,
-          },
-        });
-      }}
-      thousandSeparator="."
-      decimalSeparator=","
-      prefix="R$ "
-      decimalScale={2}
-      fixedDecimalScale
-    />
-  );
-}
+import RealInput from './RealInput' 
 
 const CadastroForm = ({
   disabled,
@@ -79,18 +55,7 @@ const CadastroForm = ({
         <Grid item xs={12}>
           <Grid container>
             <Grid item xs={5}>
-              <TextField
-                id="balance"
-                disabled={disabled}
-                value={balance}
-                onChange={onChangeField('balance')}
-                label="Crédito"
-                InputLabelProps={{ shrink: true }}
-                InputProps={{
-                  inputComponent: NumberFormatCustom,
-                }}
-                margin="normal"
-              />
+              <RealInput label="Crédito" disabled={false} onChange={({ cents }) => { onChangeField('balance')(cents) }} />
             </Grid>
             <Grid item xs={7}>
               <Typography variant="subtitle2" style={{ marginTop: 25 }}>
