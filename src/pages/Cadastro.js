@@ -11,12 +11,13 @@ import Typography from '@material-ui/core/Typography'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import CadastroForm from '../components/CadastroForm'
 import OpReview from '../components/OpReview'
+import ErrorSnack from '../components/ErrorSnack'
 import firebase from 'firebase/app'
 require('firebase/firestore')
 
 const styles = theme => ({
   appBar: {
-    position: 'relative',
+    position: 'relative'
   },
   layout: {
     width: 'auto',
@@ -25,8 +26,8 @@ const styles = theme => ({
     [theme.breakpoints.up(600 + theme.spacing.unit * 2 * 2)]: {
       width: 600,
       marginLeft: 'auto',
-      marginRight: 'auto',
-    },
+      marginRight: 'auto'
+    }
   },
   paper: {
     marginTop: theme.spacing.unit * 3,
@@ -35,11 +36,11 @@ const styles = theme => ({
     [theme.breakpoints.up(600 + theme.spacing.unit * 3 * 2)]: {
       marginTop: theme.spacing.unit * 6,
       marginBottom: theme.spacing.unit * 6,
-      padding: theme.spacing.unit * 3,
-    },
+      padding: theme.spacing.unit * 3
+    }
   },
   stepper: {
-    padding: `${theme.spacing.unit * 3}px 0 ${theme.spacing.unit * 5}px`,
+    padding: `${theme.spacing.unit * 3}px 0 ${theme.spacing.unit * 5}px`
   },
   buttons: {
     display: 'flex',
@@ -47,8 +48,11 @@ const styles = theme => ({
   },
   button: {
     marginTop: theme.spacing.unit * 3,
-    marginLeft: theme.spacing.unit,
+    marginLeft: theme.spacing.unit
   },
+  error: {
+    backgroundColor: theme.palette.error.dark
+  }
 })
 
 const steps = ['Dados do Cartão', 'Revisão']
@@ -67,24 +71,26 @@ class Cadastro extends React.Component {
       cellphone: '(83) 9',
       balance: '',
       active: true
-    },
+    }
   }
 
-  setError = (error) => {
-    this.setState({error})
-    setTimeout(() => {
-      this.setState({error: null})
-    }, 2000)
+  setError = error => {
+    this.setState({ error })
   }
-  
+
   handleSubmit = async () => {
+    return this.setError('Ocorreu um erro ao cadastrar o cartão')
     this.setState({ loading: true })
     const { card } = this.state
-    const check = await db.collection('cards').where('number', '==', card.number).get()
-    if (!check.empty) return this.setError('Já existe um cartão cadastrado com esse número')
+    const check = await db
+      .collection('cards')
+      .where('number', '==', card.number)
+      .get()
+    if (!check.empty)
+      return this.setError('Já existe um cartão cadastrado com esse número')
     try {
       await db.collection('cards').add(card)
-      this.setState({ activeStep: 1, loading: false})
+      this.setState({ activeStep: 1, loading: false })
     } catch (e) {
       console.log('Erro ao cadastrar cartão')
       console.log(e)
@@ -94,14 +100,17 @@ class Cadastro extends React.Component {
 
   handleReset = () => {
     this.setState({
-      activeStep: 0,
+      activeStep: 0
     })
   }
 
   checkValidity = () => {
-    const { card: { name, number } } = this.state
-    if (!name || name.length < 5 || !number || number > 700 || number < 0) return
-    this.setState({isValid: true})
+    const {
+      card: { name, number }
+    } = this.state
+    if (!name || name.length < 5 || !number || number > 700 || number < 0)
+      return
+    this.setState({ isValid: true })
   }
 
   onChangeField = field => e => {
@@ -121,9 +130,14 @@ class Cadastro extends React.Component {
         throw new Error('Unknown step')
     }
   }
+
+  handleCloseError = () => {
+    this.setError(null)
+  }
+
   render() {
     const { classes } = this.props
-    const { activeStep, card, loading, isValid } = this.state
+    const { activeStep, card, loading, isValid, error } = this.state
 
     return (
       <React.Fragment>
@@ -151,7 +165,11 @@ class Cadastro extends React.Component {
                   className={classes.button}
                 >
                   {loading && (
-                    <CircularProgress style={{color: 'white'}} size={20} thickness={3} />
+                    <CircularProgress
+                      style={{ color: 'white' }}
+                      size={20}
+                      thickness={3}
+                    />
                   )}
                   {!loading && (activeStep === 0 ? 'Cadastrar' : 'Novo')}
                 </Button>
@@ -159,13 +177,14 @@ class Cadastro extends React.Component {
             </React.Fragment>
           </Paper>
         </main>
+        <ErrorSnack value={error} onClose={this.handleCloseError}/>
       </React.Fragment>
     )
   }
 }
 
 Cadastro.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 }
 
 export default withStyles(styles)(Cadastro)

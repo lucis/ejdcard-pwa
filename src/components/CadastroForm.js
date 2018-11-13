@@ -2,9 +2,9 @@ import React, { Fragment } from 'react'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
-import numero from 'numero-por-extenso'
 import InputMask from 'react-input-mask'
 import RealInput from './RealInput'
+import withExtenso from './withExtenso'
 
 function TextMaskCustom(props) {
   const { inputRef, ...other } = props
@@ -23,16 +23,8 @@ const CadastroForm = ({
   disabled,
   onChangeField,
   card: { cardNumber, balance, name, cellphone },
+  centavosParaExtenso
 }) => {
-  const capitalize = text => {
-    return text
-      .toLowerCase()
-      .split(' ')
-      .map(s =>
-        s.length == 1 ? s : s.charAt(0).toUpperCase() + s.substring(1)
-      )
-      .join(' ')
-  }
   return (
     <Fragment>
       <Grid container>
@@ -97,16 +89,15 @@ const CadastroForm = ({
                 style={{ marginTop: 25, marginLeft: 10 }}
                 align='center'
               >
-                {capitalize(
-                  numero.porExtenso(balance / 100, numero.estilo.monetario)
-                )}
+                {centavosParaExtenso(balance)}
               </Typography>
             </Grid>
           </Grid>
         </Grid>
       </Grid>
+      
     </Fragment>
   )
 }
 
-export default CadastroForm
+export default withExtenso(CadastroForm)
