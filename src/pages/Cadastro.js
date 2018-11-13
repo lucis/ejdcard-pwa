@@ -11,6 +11,8 @@ import Typography from '@material-ui/core/Typography'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import CadastroForm from '../components/CadastroForm'
 import OpReview from '../components/OpReview'
+import firebase from 'firebase/app'
+require('firebase/firestore')
 
 const styles = theme => ({
   appBar: {
@@ -79,8 +81,6 @@ class Cadastro extends React.Component {
 
   checkValidity = () => {
     const { card: { name, number } } = this.state
-    console.log(name)
-    console.log(number)
     if (!name || name.length < 5 || !number || number > 700 || number < 0) return
     this.setState({isValid: true})
   }
