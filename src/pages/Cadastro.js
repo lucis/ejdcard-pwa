@@ -53,24 +53,43 @@ const styles = theme => ({
 
 const steps = ['Dados do Cartão', 'Revisão']
 
+const db = firebase.firestore()
+
 class Cadastro extends React.Component {
   state = {
     activeStep: 0,
     loading: false,
     isValid: false,
+    error: null,
     card: {
       name: '',
       number: null,
       cellphone: '(83) 9',
       balance: '',
+      active: true
     },
   }
 
-  handleSubmit = () => {
+  setError = (error) => {
+    this.setState({error})
+    setTimeout(() => {
+      this.setState({error: null})
+    }, 2000)
+  }
+  
+  handleSubmit = async () => {
     this.setState({ loading: true })
-    // this.setState(state => ({
-    //   activeStep: state.activeStep + 1,
-    // }))
+    const { card } = this.state
+    const check = await db.collection('cards').where('number', '==', card.number).get()
+    if (!check.empty) return this.setError('Já existe um cartão cadastrado com esse número')
+    try {
+      await db.collection('cards').add(card)
+      this.setState({ activeStep: 1, loading: false})
+    } catch (e) {
+      console.log('Erro ao cadastrar cartão')
+      console.log(e)
+      this.setError('Ocorreu um erro ao cadastrar o cartão')
+    }
   }
 
   handleReset = () => {
