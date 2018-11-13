@@ -1,15 +1,16 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import withStyles from '@material-ui/core/styles/withStyles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Paper from '@material-ui/core/Paper';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import CadastroForm from '../components/CadastroForm';
-import OpReview from '../components/OpReview';
+import React from 'react'
+import PropTypes from 'prop-types'
+import withStyles from '@material-ui/core/styles/withStyles'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import Paper from '@material-ui/core/Paper'
+import Stepper from '@material-ui/core/Stepper'
+import Step from '@material-ui/core/Step'
+import StepLabel from '@material-ui/core/StepLabel'
+import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import CadastroForm from '../components/CadastroForm'
+import OpReview from '../components/OpReview'
 
 const styles = theme => ({
   appBar: {
@@ -40,62 +41,70 @@ const styles = theme => ({
   },
   buttons: {
     display: 'flex',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-end'
   },
   button: {
     marginTop: theme.spacing.unit * 3,
     marginLeft: theme.spacing.unit,
   },
-});
+})
 
-const steps = ['Dados do Cartão', 'Revisão'];
+const steps = ['Dados do Cartão', 'Revisão']
 
 class Cadastro extends React.Component {
   state = {
     activeStep: 0,
+    loading: false,
+    isValid: false,
     card: {
       name: '',
       number: null,
-      cellphone: '',
-      balance: ''
-    }
-  };
+      cellphone: '(83) 9',
+      balance: '',
+    },
+  }
 
-  handleNext = () => {
-    this.setState(state => ({
-      activeStep: state.activeStep + 1,
-    }));
-  };
-
-  handleBack = () => {
-    this.setState(state => ({
-      activeStep: state.activeStep - 1,
-    }));
-  };
+  handleSubmit = () => {
+    this.setState({ loading: true })
+    // this.setState(state => ({
+    //   activeStep: state.activeStep + 1,
+    // }))
+  }
 
   handleReset = () => {
     this.setState({
       activeStep: 0,
-    });
-  };
+    })
+  }
+
+  checkValidity = () => {
+    const { card: { name, number } } = this.state
+    console.log(name)
+    console.log(number)
+    if (!name || name.length < 5 || !number || number > 700 || number < 0) return
+    this.setState({isValid: true})
+  }
 
   onChangeField = field => e => {
-    this.setState({card: {...this.state.card, [field]: e.target.value }})
+    this.setState(
+      { card: { ...this.state.card, [field]: e.target.value } },
+      this.checkValidity
+    )
   }
 
   getStepContent = (step, card) => {
     switch (step) {
       case 0:
-        return <CadastroForm onChangeField={this.onChangeField} card={card}/>;
+        return <CadastroForm onChangeField={this.onChangeField} card={card} />
       case 2:
-        return <OpReview />;
+        return <OpReview />
       default:
-        throw new Error('Unknown step');
+        throw new Error('Unknown step')
     }
   }
   render() {
-    const { classes } = this.props;
-    const { activeStep, card } = this.state;
+    const { classes } = this.props
+    const { activeStep, card, loading, isValid } = this.state
 
     return (
       <React.Fragment>
@@ -113,46 +122,31 @@ class Cadastro extends React.Component {
               ))}
             </Stepper>
             <React.Fragment>
-              {activeStep === steps.length ? (
-                <React.Fragment>
-                  <Typography variant="h5" gutterBottom>
-                    Thank you for your order.
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    Your order number is #2001539. We have emailed your order confirmation, and will
-                    send you an update when your order has shipped.
-                  </Typography>
-                </React.Fragment>
-              ) : (
-                <React.Fragment>
-                  {this.getStepContent(activeStep, card)}
-                  <div className={classes.buttons}>
-                    {activeStep !== 0 && (
-                      <Button onClick={this.handleBack} className={classes.button}>
-                        Back
-                      </Button>
-                    )}
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={this.handleNext}
-                      className={classes.button}
-                    >
-                      {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
-                    </Button>
-                  </div>
-                </React.Fragment>
-              )}
+              {this.getStepContent(activeStep, card)}
+              <div className={classes.buttons}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={!isValid}
+                  onClick={this.handleSubmit}
+                  className={classes.button}
+                >
+                  {loading && (
+                    <CircularProgress style={{color: 'white'}} size={20} thickness={3} />
+                  )}
+                  {!loading && (activeStep === 0 ? 'Cadastrar' : 'Novo')}
+                </Button>
+              </div>
             </React.Fragment>
           </Paper>
         </main>
       </React.Fragment>
-    );
+    )
   }
 }
 
 Cadastro.propTypes = {
   classes: PropTypes.object.isRequired,
-};
+}
 
-export default withStyles(styles)(Cadastro);
+export default withStyles(styles)(Cadastro)
