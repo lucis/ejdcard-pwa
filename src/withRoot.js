@@ -6,6 +6,7 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import * as firebase from 'firebase'
 
 import { AuthProvider } from './contexts/AuthContext'
+import { LoadingProvider } from './contexts/LoadingContext'
 
 const config = {
   apiKey: 'AIzaSyD6Atam9L3DUmo_iSUagFY_XXLF2bYTPnk',
@@ -41,10 +42,12 @@ function withRoot(Component) {
   function WithRoot(props) {
     return (
       <AuthProvider>
-        <MuiThemeProvider theme={theme}>
-          <CssBaseline />
-          <Component {...props} />
-        </MuiThemeProvider>
+        <LoadingProvider>
+          <MuiThemeProvider theme={theme}>
+            <CssBaseline />
+            <Component {...props} />
+          </MuiThemeProvider>
+        </LoadingProvider>
       </AuthProvider>
     )
   }

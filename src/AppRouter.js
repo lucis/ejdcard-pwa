@@ -2,28 +2,19 @@ import React, { Component } from 'react'
 import { BrowserRouter, Route } from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { Landing, Login, AppShell } from './pages'
+import { withLoading } from './contexts/LoadingContext'
+import { withUser } from './contexts/AuthContext'
 import PrivateRoute from './components/PrivateRoute'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 
 class AppRouter extends Component {
-  state = {
-    user: null,
-    loading: true
-  }
-
-  componentDidMount = () => {
-    firebase.auth().onAuthStateChanged(user => {
-      this.setState({ user, loading: false })
-    })
-  }
-
   render = () => {
-    const { user, loading } = this.state
+    const { isLoading, user } = this.props
     return (
       <BrowserRouter>
         <div>
-          {loading && (
+          {isLoading && (
             <div className="fixed z-9999 top-0 left-0 bottom-0 right-0 bg-black-20 justify-center ">
               <CircularProgress style={{top: '50%', left: '50%', position: 'absolute'}} />
             </div>
@@ -37,4 +28,4 @@ class AppRouter extends Component {
   }
 }
 
-export default AppRouter
+export default withUser(withLoading(AppRouter))
