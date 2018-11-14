@@ -31,6 +31,7 @@ const loader = (
 const styles = {
   card: {
     minWidth: 275,
+    marginTop: 15
   },
   pos: {
     marginBottom: 12,
@@ -39,6 +40,9 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
   },
+  real: {
+    fontSize: '19px'
+  }
 }
 
 const OperacaoReview = props => {
@@ -51,7 +55,7 @@ const OperacaoReview = props => {
   return (
     <Card className={classes.card}>
       <CardContent className={classes.cardContent}>
-        <div style={{ borderRight: '1px solid #ccc', paddingRight: '10px' }}>
+        <div style={{ borderRight: '1px solid #ccc', paddingRight: '10px', width: '60%' }}>
           <div>
             <Typography
               className={classes.title}
@@ -97,6 +101,7 @@ const OperacaoReview = props => {
             </Typography>
             <Typography
               variant="h6"
+              className={classes.real}
               component={RealSpan}
               color={getColorForTypo('secondary')}
               align="right"
@@ -116,6 +121,7 @@ const OperacaoReview = props => {
             </Typography>
             <Typography
               variant="h6"
+              className={classes.real}
               component={RealSpan}
               color={getColorForTypo('primary')}
               align="right"
@@ -132,7 +138,7 @@ const OperacaoReview = props => {
 
 OperacaoReview.propTypes = {
   classes: PropTypes.object.isRequired,
-  card: PropTypes.object.isRequired,
+  card: PropTypes.object,
   disabled: PropTypes.bool,
   loading: PropTypes.bool,
   futureBalance: PropTypes.number,

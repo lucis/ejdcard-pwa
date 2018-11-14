@@ -29,8 +29,12 @@ class OperacaoForm extends Component {
   }
 
   searchCardDebounced = debounce(async () => {
-    const { cardNumber } = this.state
-    this.setState({ loadingCard: true })
+    let { cardNumber } = this.state
+    console.log(cardNumber)
+    console.log(typeof cardNumber)
+    // PLEASE FIX THAT LUCIS
+    cardNumber = Number(cardNumber)
+    this.setState({ loadingCard: true, card: null })
     try {
       const query = await db
         .collection('cards')
@@ -39,9 +43,10 @@ class OperacaoForm extends Component {
       if (query.empty)
         return this.setState({
           error: 'Não existe um cartão cadastrado com esse número',
+          loadingCard: false
         })
       query.forEach(docRef => {
-        this.setState({ card: docRef.data(), loadingCard: false})
+        this.setState({ card: docRef.data(), pristine: false, loadingCard: false})
       })
     } catch (e) {
       this.setState({
