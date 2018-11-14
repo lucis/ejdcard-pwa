@@ -75,7 +75,7 @@ class Cadastro extends React.Component {
   }
 
   setError = error => {
-    this.setState({ error })
+    this.setState({ error, loading: false })
   }
 
   handleSubmit = async () => {
