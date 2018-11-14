@@ -22,18 +22,14 @@ class OperacaoForm extends Component {
     loadingCard: false,
     loadingPurchase: false,
     cardNumber: '',
-    purchaseAmount: 0,
-    isValid: false,
+    operationAmount: 0,
     card: null,
     error: null,
   }
 
   searchCardDebounced = debounce(async () => {
     let { cardNumber } = this.state
-    console.log(cardNumber)
-    console.log(typeof cardNumber)
-    // PLEASE FIX THAT LUCIS
-    cardNumber = Number(cardNumber)
+    // FIX - CardNumbers should be string in Firebase
     this.setState({ loadingCard: true, card: null })
     try {
       const query = await db
@@ -43,16 +39,29 @@ class OperacaoForm extends Component {
       if (query.empty)
         return this.setState({
           error: 'Não existe um cartão cadastrado com esse número',
-          loadingCard: false
+          loadingCard: false,
+          cardNumber: ''
         })
       query.forEach(docRef => {
-        this.setState({ card: docRef.data(), pristine: false, loadingCard: false})
+        const card = docRef.data()
+        if (!card.active) {
+          return this.setState({
+            error: 'O cartão com este número foi desativado',
+            loadingCard: false,
+            cardNumber: ''
+          })
+        }
+        this.setState({
+          card,
+          pristine: false,
+          loadingCard: false,
+        })
       })
     } catch (e) {
       this.setState({
         pristine: true,
         error: 'Ocorreu um erro ao buscar dados do cartão',
-        loadingCard: false
+        loadingCard: false,
       })
     }
   }, 1000)
@@ -63,16 +72,40 @@ class OperacaoForm extends Component {
   }
 
   calcFutureBalance = () => {
-    const { card, purchaseAmount } = this.state
+    const { card, operationAmount } = this.state
     if (!card || !card.balance) return
     const { op } = this.props
-    let operand = purchaseAmount
+    let operand = operationAmount
     if (op === 'v') operand = operand * -1
     return card.balance + operand
   }
 
   handleCloseError = () => {
     this.setState({ error: null })
+  }
+
+  checkValid = () => {
+    const {
+      pristine,
+      loadingCard,
+      cardNumber,
+      operationAmount,
+      card,
+    } = this.state
+
+    const futureBalance = this.calcFutureBalance()
+    return (
+      !pristine &&
+      !loadingCard &&
+      cardNumber &&
+      card &&
+      card.number &&
+      cardNumber === card.number &&
+      card.active &&
+      operationAmount &&
+      futureBalance &&
+      futureBalance > 0
+    )
   }
 
   handleSubmit = () => {}
@@ -85,8 +118,7 @@ class OperacaoForm extends Component {
       loadingCard,
       loadingPurchase,
       cardNumber,
-      purchaseAmount,
-      isValid,
+      operationAmount,
       card,
       error,
     } = this.state
@@ -109,7 +141,7 @@ class OperacaoForm extends Component {
               onChange={this.onChangeNumber}
               id="cardNumber"
               value={cardNumber}
-              label="Número"
+              label="Cartão"
               type="number"
               InputLabelProps={{ shrink: true }}
               margin="normal"
@@ -120,11 +152,11 @@ class OperacaoForm extends Component {
           </div>
           <div style={{ width: '45%' }}>
             <RealInput
-              label="Crédito"
+              label="Valor"
               initialValue={0}
               disabled={false}
               onChange={({ cents }) => {
-                this.setState({ purchaseAmount: cents })
+                this.setState({ operationAmount: cents })
               }}
             />
           </div>
@@ -140,7 +172,7 @@ class OperacaoForm extends Component {
           color="textSecondary"
           align="center"
         >
-          {centavosParaExtenso(purchaseAmount) || ' -- '}
+          {centavosParaExtenso(operationAmount) || ' -- '}
         </Typography>
         {
           <OperacaoReview
@@ -156,7 +188,7 @@ class OperacaoForm extends Component {
           <Button
             variant="contained"
             color="primary"
-            disabled={!isValid}
+            disabled={!this.checkValid()}
             onClick={this.handleSubmit}
           >
             {loadingPurchase && (

@@ -79,6 +79,7 @@ class Cadastro extends React.Component {
   }
 
   handleSubmit = async () => {
+    // FIX - check type of number - should be string
     this.setState({ loading: true })
     const { card } = this.state
     const check = await db

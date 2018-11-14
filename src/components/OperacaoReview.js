@@ -123,11 +123,11 @@ const OperacaoReview = props => {
               variant="h6"
               className={classes.real}
               component={RealSpan}
-              color={getColorForTypo('primary')}
+              color={futureBalance < 0 ? 'error' : getColorForTypo('primary')}
               align="right"
               noWrap
             >
-              {futureBalance}
+              {futureBalance > 0 ? futureBalance : 0}
             </Typography>
           </div>
         </div>
