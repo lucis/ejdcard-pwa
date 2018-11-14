@@ -62,7 +62,7 @@ const OperacaoReview = props => {
               color="textSecondary"
               gutterBottom
             >
-              dono
+              donx
             </Typography>
             <Typography
               variant="h6"
