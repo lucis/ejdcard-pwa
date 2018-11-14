@@ -113,10 +113,6 @@ class Login extends Component {
     });
   }
 
-  componentDidUpdate() {
-    console.log('did Update')
-    console.log(this.props)
-  }
   loginWithFacebook = () => {
     const facebookProvider = new firebase.auth.FacebookAuthProvider();
     firebase.auth().signInWithRedirect(facebookProvider);
