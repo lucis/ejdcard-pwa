@@ -3,7 +3,7 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-
+import { withUser } from '../contexts/AuthContext'
 
 const PrivateRoute = ({ component: Component, user, role, ...rest }) => {
   // verify that the current user has role and whatnot
@@ -11,7 +11,7 @@ const PrivateRoute = ({ component: Component, user, role, ...rest }) => {
   <Route
     {...rest}
     render={props =>
-      !!user && (role || true) ? (
+      !!user ? (
         <Component {...props} />
       ) : (
         <Redirect
@@ -25,4 +25,4 @@ const PrivateRoute = ({ component: Component, user, role, ...rest }) => {
   />
 )}
 
-export default PrivateRoute
+export default withUser(PrivateRoute)

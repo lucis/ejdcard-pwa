@@ -122,6 +122,7 @@ class AppShell extends React.Component {
       classes,
       match,
       user: { roles },
+      setUser
     } = this.props
 
     return (
@@ -200,6 +201,7 @@ class AppShell extends React.Component {
               button
               onClick={() => {
                 firebase.auth().signOut()
+                setUser(null)
               }}
             >
               <ListItemIcon>

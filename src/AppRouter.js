@@ -3,10 +3,7 @@ import { BrowserRouter, Route } from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { Landing, Login, AppShell } from './pages'
 import { withLoading } from './contexts/LoadingContext'
-import { withUser } from './contexts/AuthContext'
 import PrivateRoute from './components/PrivateRoute'
-import firebase from 'firebase/app'
-import 'firebase/auth'
 
 class AppRouter extends Component {
   render = () => {
@@ -21,11 +18,11 @@ class AppRouter extends Component {
           )}
           <Route path="/" exact component={Landing} />
           <Route path="/login/" component={Login} />
-          <PrivateRoute user={user} path="/app/" component={AppShell} />
+          <PrivateRoute path="/app/" component={AppShell} />
         </div>
       </BrowserRouter>
     )
   }
 }
 
-export default withUser(withLoading(AppRouter))
+export default withLoading(AppRouter)
