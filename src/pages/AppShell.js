@@ -16,12 +16,12 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
-import { Route, Redirect, Switch } from 'react-router-dom'
+import { Route, Redirect } from 'react-router-dom'
 import firebase from 'firebase/app'
 import { withUser } from '../contexts/AuthContext'
 
 import 'firebase/auth'
-import { Admin, Home, Cadastro } from './'
+import { Admin, Home, Cadastro, Venda } from './'
 
 const drawerWidth = 240
 
@@ -194,7 +194,7 @@ class AppShell extends React.Component {
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           <Route path={`${match.path}home`} render={(props) => <Home {...props} roles={roles}/>} />
-          <Route path={`${match.path}venda`} component={Admin} />
+          <Route path={`${match.path}venda`} component={Venda} />
           <Route path={`${match.path}recarda`} component={Admin} />
           <Route path={`${match.path}cadastro`} component={Cadastro} />
           <Route path={`${match.path}consulta`} component={Admin} />

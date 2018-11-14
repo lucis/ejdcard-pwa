@@ -27,14 +27,6 @@ class RealInput extends Component {
     this.setState({ textValue: maskedValue, cents: Number(centsString) }, () => {onChange(this.state)})
   }
 
-  componentDidMount() {
-    // const { initialValue = ''} = this.props
-    // const centsString = initialValue + ''
-    // const l = centsString.length
-    // const textValue = centsString.slice(0, l - 2) + ',' + centsString.slice(l - 2)
-    // this.setState({textValue, cents: Number(initialValue)})
-  }
-
   render = () => {
     const { textValue } = this.state
 

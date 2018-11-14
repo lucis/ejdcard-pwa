@@ -8,7 +8,7 @@ export default (WrappedComponent) => {
               .toLowerCase()
               .split(' ')
               .map(s =>
-                s.length == 1 ? s : s.charAt(0).toUpperCase() + s.substring(1)
+                s.length === 1 ? s : s.charAt(0).toUpperCase() + s.substring(1)
               )
               .join(' ')
           }

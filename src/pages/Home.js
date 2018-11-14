@@ -25,7 +25,7 @@ const styles = {
 }
 
 function Home(props) {
-  const { classes, roles, history } = props
+  const { roles, history } = props
 
   const getOptionsForRoles = roles => {
     const options = [
