@@ -69,7 +69,7 @@ class Cadastro extends React.Component {
       name: '',
       number: null,
       cellphone: '(83) 9',
-      balance: '',
+      balance: 0,
       active: true
     }
   }
