@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
 
+const MAX_DIGITS = 5
+
 class RealInput extends Component {
   state = {
     textValue: '',
@@ -20,7 +22,7 @@ class RealInput extends Component {
         cents: Number(centsString)
       }, () => {onChange(this.state)})
     }
-      
+    if (l > MAX_DIGITS) return
     l = centsString.length
     const maskedValue =
       centsString.slice(0, l - 2) + ',' + centsString.slice(l - 2)

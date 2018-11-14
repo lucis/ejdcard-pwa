@@ -16,8 +16,10 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
+import HomeIcon from '@material-ui/icons/Home'
 import { Route, Redirect } from 'react-router-dom'
 import firebase from 'firebase/app'
+import { withRouter } from 'react-router-dom'
 import { withUser } from '../contexts/AuthContext'
 
 import 'firebase/auth'
@@ -116,7 +118,11 @@ class AppShell extends React.Component {
   }
 
   render() {
-    const { classes, match, user: { roles } } = this.props
+    const {
+      classes,
+      match,
+      user: { roles },
+    } = this.props
 
     return (
       <div className={classes.root}>
@@ -181,6 +187,18 @@ class AppShell extends React.Component {
             <ListItem
               button
               onClick={() => {
+                this.props.history.push('home')
+                this.handleDrawerClose()
+              }}
+            >
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary="Home" />
+            </ListItem>
+            <ListItem
+              button
+              onClick={() => {
                 firebase.auth().signOut()
               }}
             >
@@ -193,7 +211,10 @@ class AppShell extends React.Component {
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
-          <Route path={`${match.path}home`} render={(props) => <Home {...props} roles={roles}/>} />
+          <Route
+            path={`${match.path}home`}
+            render={props => <Home {...props} roles={roles} />}
+          />
           <Route path={`${match.path}venda`} component={Venda} />
           <Route path={`${match.path}recarda`} component={Admin} />
           <Route path={`${match.path}cadastro`} component={Cadastro} />
@@ -202,7 +223,7 @@ class AppShell extends React.Component {
           <Route
             exact
             path={match.path}
-            render={() => <Redirect to={{pathname: `${match.path}home`}}/>}
+            render={() => <Redirect to={{ pathname: `${match.path}home` }} />}
           />
         </main>
       </div>
@@ -214,4 +235,4 @@ AppShell.propTypes = {
   classes: PropTypes.object.isRequired,
 }
 
-export default withUser(withStyles(styles)(AppShell))
+export default withRouter(withUser(withStyles(styles)(AppShell)))
