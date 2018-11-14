@@ -1,4 +1,4 @@
-import React from 'React'
+import React from 'react'
 import numero from 'numero-por-extenso'
 
 export default (WrappedComponent) => {

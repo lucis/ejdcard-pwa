@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import withStyles from '@material-ui/core/styles/withStyles'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -9,7 +9,6 @@ import StepLabel from '@material-ui/core/StepLabel'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import CadastroForm from '../components/CadastroForm'
 import OpReview from '../components/OpReview'
 import ErrorSnack from '../components/ErrorSnack'
 import firebase from 'firebase/app'
@@ -59,7 +58,7 @@ const steps = ['Dados do Cartão', 'Revisão']
 
 const db = firebase.firestore()
 
-class Cadastro extends React.Component {
+class Venda extends React.Component {
   state = {
     activeStep: 0,
     loading: false,
@@ -122,7 +121,7 @@ class Cadastro extends React.Component {
   getStepContent = (step, card) => {
     switch (step) {
       case 0:
-        return <CadastroForm onChangeField={this.onChangeField} card={card} />
+        return null
       case 2:
         return <OpReview />
       default:
@@ -139,12 +138,12 @@ class Cadastro extends React.Component {
     const { activeStep, card, loading, isValid, error } = this.state
 
     return (
-      <React.Fragment>
+      <Fragment>
         <CssBaseline />
         <main className={classes.layout}>
           <Paper className={classes.paper}>
             <Typography component="h1" variant="h4" align="center">
-              Cadastro
+              Venda
             </Typography>
             <Stepper activeStep={activeStep} className={classes.stepper}>
               {steps.map(label => (
@@ -153,7 +152,7 @@ class Cadastro extends React.Component {
                 </Step>
               ))}
             </Stepper>
-            <React.Fragment>
+            <Fragment>
               {this.getStepContent(activeStep, card)}
               <div className={classes.buttons}>
                 <Button
@@ -173,17 +172,17 @@ class Cadastro extends React.Component {
                   {!loading && (activeStep === 0 ? 'Cadastrar' : 'Novo')}
                 </Button>
               </div>
-            </React.Fragment>
+            </Fragment>
           </Paper>
         </main>
         <ErrorSnack value={error} onClose={this.handleCloseError}/>
-      </React.Fragment>
+      </Fragment>
     )
   }
 }
 
-Cadastro.propTypes = {
+Venda.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(Cadastro)
+export default withStyles(styles)(Venda)
