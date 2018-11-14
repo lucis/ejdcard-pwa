@@ -126,6 +126,7 @@ class Cadastro extends React.Component {
       activeStep: 1,
       loading: false,
       operation: { type: 'c', code: logId },
+      card
     })
   }
 
@@ -150,9 +151,8 @@ class Cadastro extends React.Component {
     const {
       card: { name, number },
     } = this.state
-    if (!name || name.length < 5 || !number || number > 700 || number < 0)
-      return
-    this.setState({ isValid: true })
+    const clause =  (!name || name.length < 5 || !number || Number.isNaN(Number(number)) || number > 700 || number < 0)
+    this.setState({ isValid: !clause })
   }
 
   onChangeField = field => e => {
