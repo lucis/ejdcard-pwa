@@ -11,6 +11,8 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import firebase from 'firebase/app'
 require('firebase/firestore')
 
+const loader = null
+
 class UserRoleList extends Component {
   state = {
     loading: false,
@@ -118,7 +120,8 @@ class UserRoleList extends Component {
   }
 
   render = () => {
-    const { users, userIdsShowed } = this.state
+    const { users, userIdsShowed, loading } = this.state
+    if (loading) return loader
     if (!userIdsShowed.length) return null
     return (
       <div>
