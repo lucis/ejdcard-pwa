@@ -8,74 +8,62 @@ import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
-import ErrorSnack from '../components/ErrorSnack'
 import OperacaoForm from '../components/OperacaoForm'
+import Resumo from '../components/Resumo'
 
-const styles = theme => ({
-  appBar: {
-    position: 'relative',
-  },
+const styles = ({ breakpoints, spacing: { unit } }) => ({
   layout: {
     width: 'auto',
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2,
-    [theme.breakpoints.up(600 + theme.spacing.unit * 2 * 2)]: {
+    marginLeft: unit * 2,
+    marginRight: unit * 2,
+    [breakpoints.up(600 + unit * 2 * 2)]: {
       width: 600,
       marginLeft: 'auto',
       marginRight: 'auto',
     },
   },
   paper: {
-    marginTop: theme.spacing.unit * 3,
-    marginBottom: theme.spacing.unit * 3,
-    padding: theme.spacing.unit * 2,
-    [theme.breakpoints.up(600 + theme.spacing.unit * 3 * 2)]: {
-      marginTop: theme.spacing.unit * 6,
-      marginBottom: theme.spacing.unit * 6,
-      padding: theme.spacing.unit * 3,
+    marginTop: unit * 3,
+    marginBottom: unit * 3,
+    padding: unit * 2,
+    [breakpoints.up(600 + unit * 3 * 2)]: {
+      marginTop: unit * 6,
+      marginBottom: unit * 6,
+      padding: unit * 3,
     },
   },
   stepper: {
-    padding: `${theme.spacing.unit * 3}px 0 ${theme.spacing.unit * 5}px`,
+    padding: `${unit * 3}px 0 ${unit * 5}px`,
   },
   buttons: {
     display: 'flex',
     justifyContent: 'flex-end',
   },
-  button: {
-    marginTop: theme.spacing.unit * 3,
-    marginLeft: theme.spacing.unit,
-  },
-  error: {
-    backgroundColor: theme.palette.error.dark,
-  },
 })
 
-const steps = ['Dados do Compra', 'Resumo']
 
-class Venda extends React.Component {
+class Operacao extends React.Component {
   state = {
-    showResumo: false,
+    card: null,
+    operation: null,
   }
-
-  setError = error => {
-    this.setState({ error })
-  }
-
 
   handleReset = () => {
     this.setState({
-      showResumo: false,
+      card: null,
+      operation: null,
     })
   }
 
-  handleCloseError = () => {
-    this.setError(null)
-  }
+  onFinishOp = (card, operation) => this.setState({ card, operation })
 
   render() {
-    const { classes } = this.props
-    const { isValid, error, showResumo } = this.state
+    const { classes, op } = this.props
+    const { card, operation } = this.state
+
+
+    const title = {v: 'Venda', u: 'Recarga', 'f': 'Finalização'}[op]
+    const steps = ['Dados', 'Resumo']
 
     return (
       <Fragment>
@@ -83,12 +71,9 @@ class Venda extends React.Component {
         <main className={classes.layout}>
           <Paper className={classes.paper}>
             <Typography component="h1" variant="h4" align="center">
-              Venda
+              {title}
             </Typography>
-            <Stepper
-              activeStep={showResumo ? 1 : 0}
-              className={classes.stepper}
-            >
+            <Stepper activeStep={card ? 1 : 0} className={classes.stepper}>
               {steps.map(label => (
                 <Step key={label}>
                   <StepLabel>{label}</StepLabel>
@@ -96,30 +81,33 @@ class Venda extends React.Component {
               ))}
             </Stepper>
             <Fragment>
-              {showResumo ? null : <OperacaoForm op="v" />}
-              {showResumo && (
+              {card ? (
+                <Resumo card={card} operation={operation} />
+              ) : (
+                <OperacaoForm op={op} onFinishOp={this.onFinishOp} />
+              )}
+              {card && (
                 <div className={classes.buttons}>
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={this.handleSubmit}
+                    onClick={this.handleReset}
                     className={classes.button}
                   >
-                    Nova Venda
+                    {'Nova ' + title}
                   </Button>
                 </div>
               )}
             </Fragment>
           </Paper>
         </main>
-        <ErrorSnack value={error} onClose={this.handleCloseError} />
       </Fragment>
     )
   }
 }
 
-Venda.propTypes = {
+Operacao.propTypes = {
   classes: PropTypes.object.isRequired,
 }
 
-export default withStyles(styles)(Venda)
+export default withStyles(styles)(Operacao)

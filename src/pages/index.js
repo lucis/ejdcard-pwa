@@ -4,7 +4,7 @@ import Login from './Login'
 import AppShell from './AppShell'
 import Home from './Home'
 import Cadastro from './Cadastro'
-import Venda from './Venda'
+import Operacao from './Operacao'
 
 export {
   Admin,
@@ -13,5 +13,5 @@ export {
   AppShell,
   Home,
   Cadastro,
-  Venda
+  Operacao
 }
