@@ -5,27 +5,31 @@ import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
 import { withRouter } from 'react-router-dom'
+import { withUser } from '../contexts/AuthContext'
 
 const styles = {
   card: {
     minWidth: 275,
-    marginTop: 10
+    marginTop: 10,
   },
   bullet: {
     display: 'inline-block',
     margin: '0 2px',
-    transform: 'scale(0.8)'
+    transform: 'scale(0.8)',
   },
   title: {
-    fontSize: 14
+    fontSize: 14,
   },
   pos: {
-    marginBottom: 12
-  }
+    marginBottom: 12,
+  },
 }
 
-function Home(props) {
-  const { user: { roles, name}, history } = props
+const Home = (props) => {
+  const {
+    user: { roles, name },
+    history,
+  } = props
 
   const getOptionsForRoles = roles => {
     const options = [
@@ -38,7 +42,8 @@ function Home(props) {
       },
       {
         title: 'Vender',
-        subtitle: 'Para lojinha ou lanchonete. Tenha cuidado e digite com atenção!',
+        subtitle:
+          'Para lojinha ou lanchonete. Tenha cuidado e digite com atenção!',
         path: 'venda',
         role: 'v',
       },
@@ -68,13 +73,19 @@ function Home(props) {
         subtitle:
           'Você poderá autorizar usuários e ver estatísticas sobre o evento.',
         path: 'admin',
-        role: 'a'
-      }
+        role: 'a',
+      },
     ]
     return options
       .filter(({ role }) => roles.includes(role))
       .map(({ title, subtitle, path }, key) => (
-        <Card className="pointer mt2 w5-ns" key={key} onClick={() => {history.push(path)}}>
+        <Card
+          className="pointer mt2 w5-ns"
+          key={key}
+          onClick={() => {
+            history.push(path)
+          }}
+        >
           <CardContent>
             <Typography variant="h5" component="h2">
               {title}
@@ -84,7 +95,7 @@ function Home(props) {
         </Card>
       ))
   }
-  
+
   const firstName = name.split[' '][0]
 
   return (
@@ -104,7 +115,7 @@ function Home(props) {
 
 Home.propTypes = {
   classes: PropTypes.object.isRequired,
-  roles: PropTypes.string.isRequired
+  roles: PropTypes.string.isRequired,
 }
 
 export default withUser(withRouter(withStyles(styles)(Home)))

@@ -15,7 +15,9 @@ class UserRoleList extends Component {
   state = {
     loading: false,
     users: {},
-    usersIds: []
+    usersIds: [],
+    userIdsShowed: [],
+    searchTerm: '',
   }
 
   componentDidMount = async () => {
@@ -35,7 +37,12 @@ class UserRoleList extends Component {
       usersLoaded[userData.uid] = { ...userData, loading: false }
       usersIds.push(userData.uid)
     })
-    this.setState({ loading: false, users: usersLoaded, usersIds })
+    this.setState({
+      loading: false,
+      users: usersLoaded,
+      usersIds,
+      userIdsShowed: usersIds,
+    })
   }
 
   setUserLoading = (uid, loading) => {
@@ -45,7 +52,7 @@ class UserRoleList extends Component {
   setUserProp = prop => (uid, value) => {
     const userRef = this.state.users[uid]
     this.setState({
-      users: { ...this.state.users, [uid]: { ...userRef, [prop]: value } }
+      users: { ...this.state.users, [uid]: { ...userRef, [prop]: value } },
     })
   }
 
@@ -60,50 +67,64 @@ class UserRoleList extends Component {
     this.setUserLoading(uid, false)
   }
 
+  handleSearch = searchTerm => {
+    const { users, usersIds } = this.state
+    const userIdsShowed = usersIds
+      .map(uid => users[uid])
+      .filter(() => true)
+      .map(user => user.uid)
+    this.setState({ searchTerm, userIdsShowed })
+  }
+
   setUserRoles = (uid, roles) => {
     this.setUserProp('roles')(uid, roles)
   }
 
-  renderListItem = ({ uid, name, picUrl, email, roles, loading }) => (
-    <ListItem key={uid} button>
-      <Avatar alt={name} src={picUrl} />
-      <ListItemText primary={name} secondary={email} />
-      <ListItemSecondaryAction
-        style={{
-          justifyContent: 'flex-end',
-          alignItems: 'center',
-          display: 'flex'
-        }}
-      >
-        <Input
-          disabled={loading}
-          value={roles}
-          onChange={e => {
-            this.setUserRoles(uid, e.target.value)
-          }}
-          style={{ width: '20%', height: '50%' }}
-        />
-        <IconButton
-          component="button"
-          onClick={() => {
-            this.updateUserRoles(uid)
+  renderListItem = ({ uid, name, picUrl, email, roles, loading }) => {
+    const emailTruncated = email && email.split('@')[0] + '@...'
+    return (
+      <ListItem key={uid} button>
+        <Avatar alt={name} src={picUrl} />
+        <ListItemText primary={name} secondary={emailTruncated} />
+        <ListItemSecondaryAction
+          style={{
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            display: 'flex',
           }}
         >
-          {!loading && <Done />}
-          {loading && (
-            <CircularProgress size={25} color="primary" thickness={3} />
-          )}
-        </IconButton>
-      </ListItemSecondaryAction>
-    </ListItem>
-  )
+          <Input
+            disabled={loading}
+            value={roles}
+            onChange={e => {
+              this.setUserRoles(uid, e.target.value)
+            }}
+            style={{ width: '20%', height: '50%' }}
+          />
+          <IconButton
+            component="button"
+            onClick={() => {
+              this.updateUserRoles(uid)
+            }}
+          >
+            {!loading && <Done />}
+            {loading && (
+              <CircularProgress size={25} color="primary" thickness={3} />
+            )}
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>
+    )
+  }
 
   render = () => {
-    const { users, usersIds } = this.state
-    if (!usersIds.length) return null
+    const { users, userIdsShowed } = this.state
+    if (!userIdsShowed.length) return null
     return (
       <div>
-        <List dense>{usersIds.map(uid => users[uid]).map(this.renderListItem)}</List>
+        <List dense>
+          {userIdsShowed.map(uid => users[uid]).map(this.renderListItem)}
+        </List>
       </div>
     )
   }
