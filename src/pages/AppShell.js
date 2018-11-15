@@ -23,7 +23,7 @@ import { withRouter } from 'react-router-dom'
 import { withUser } from '../contexts/AuthContext'
 
 import 'firebase/auth'
-import { Admin, Home, Cadastro, Venda } from './'
+import { Admin, Home, Cadastro, Operacao } from './'
 
 const drawerWidth = 240
 
@@ -121,8 +121,7 @@ class AppShell extends React.Component {
     const {
       classes,
       match,
-      user: { roles },
-      setUser
+      setUser,
     } = this.props
 
     return (
@@ -215,10 +214,20 @@ class AppShell extends React.Component {
           <div className={classes.appBarSpacer} />
           <Route
             path={`${match.path}home`}
-            render={props => <Home {...props} roles={roles} />}
+            component={Home}
           />
-          <Route path={`${match.path}venda`} component={Venda} />
-          <Route path={`${match.path}recarda`} component={Admin} />
+          <Route
+            path={`${match.path}venda`}
+            render={props => <Operacao op="v" {...props} />}
+          />
+          <Route
+            path={`${match.path}recarga`}
+            render={props => <Operacao op="u" {...props} />}
+          />
+          <Route
+            path={`${match.path}finalizacao`}
+            render={props => <Operacao op="f" {...props} />}
+          />
           <Route path={`${match.path}cadastro`} component={Cadastro} />
           <Route path={`${match.path}consulta`} component={Admin} />
           <Route path={`${match.path}admin`} component={Admin} />

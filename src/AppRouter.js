@@ -7,7 +7,7 @@ import PrivateRoute from './components/PrivateRoute'
 
 class AppRouter extends Component {
   render = () => {
-    const { isLoading, user } = this.props
+    const { isLoading } = this.props
     return (
       <BrowserRouter>
         <div>

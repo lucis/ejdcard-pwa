@@ -25,23 +25,10 @@ const styles = {
 }
 
 function Home(props) {
-  const { roles, history } = props
+  const { user: { roles, name}, history } = props
 
   const getOptionsForRoles = roles => {
     const options = [
-      {
-        title: 'Vender',
-        subtitle: 'Para lojinha ou lanchonete. Tenha cuidado!',
-        path: 'venda',
-        role: 'v',
-      },
-      {
-        title: 'Recarregar',
-        subtitle:
-          'Você deve receber dinheiro do usuário e adicionar crédito no seu cartão',
-        path: 'recarga',
-        role: 'u',
-      },
       {
         title: 'Cadastrar Cartão',
         subtitle:
@@ -50,11 +37,31 @@ function Home(props) {
         role: 'c',
       },
       {
+        title: 'Vender',
+        subtitle: 'Para lojinha ou lanchonete. Tenha cuidado e digite com atenção!',
+        path: 'venda',
+        role: 'v',
+      },
+      {
+        title: 'Recarregar',
+        subtitle:
+          'Você deve receber dinheiro do usuário e adicionar crédito no seu cartão.',
+        path: 'recarga',
+        role: 'u',
+      },
+      {
         title: 'Consultar Saldo',
         subtitle:
-          'Você só precisar do número do seu cartão e das duas letras iniciais de quem o cadastrou.',
+          'Você só vai precisar do número do cartão e das duas letras iniciais do nome do portador.',
         path: 'consulta',
         role: 'r',
+      },
+      {
+        title: 'Finalizar Cartão',
+        subtitle:
+          'Você precisará do número do cartão, e deverá devolver o valor restante do saldo para o portador.',
+        path: 'finalizacao',
+        role: 'f',
       },
       {
         title: 'Administração',
@@ -78,15 +85,17 @@ function Home(props) {
       ))
   }
   
+  const firstName = name.split[' '][0]
+
   return (
     <div>
       <Typography variant="h5" align="center" className="pt4-l">
         <span>
-          Seja bem-vindo, <span className="b">Luciano</span>
+          Seja bem-vindo, <span className="b">{firstName}</span>
         </span>
       </Typography>
       <Typography variant="subtitle1" align="center">
-        Veja o que você pode fazer
+        Veja o que você pode fazer:
       </Typography>
       {getOptionsForRoles(roles)}
     </div>
@@ -98,4 +107,4 @@ Home.propTypes = {
   roles: PropTypes.string.isRequired
 }
 
-export default withRouter(withStyles(styles)(Home))
+export default withUser(withRouter(withStyles(styles)(Home)))
