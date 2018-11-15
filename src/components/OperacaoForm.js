@@ -28,6 +28,17 @@ class OperacaoForm extends Component {
     error: null,
   }
 
+  reset = () => {
+    this.setState({
+      pristine: true,
+      loadingCard: false,
+      loadingPurchase: false,
+      cardNumber: '',
+      operationAmount: 0,
+      card: null,
+      error: null,
+    })
+  }
   searchCardDebounced = debounce(async () => {
     let { cardNumber } = this.state
     // FIX - CardNumbers should be string in Firebase
@@ -42,7 +53,7 @@ class OperacaoForm extends Component {
           error: 'Não existe um cartão cadastrado com esse número',
           pristine: true,
           loadingCard: false,
-          cardNumber: ''
+          cardNumber: '',
         })
       query.forEach(docRef => {
         const card = docRef.data()
@@ -50,11 +61,11 @@ class OperacaoForm extends Component {
           return this.setState({
             error: 'O cartão com este número foi desativado',
             loadingCard: false,
-            cardNumber: ''
+            cardNumber: '',
           })
         }
         this.setState({
-          card: {...card, id: docRef.id},
+          card: { ...card, id: docRef.id },
           pristine: false,
           loadingCard: false,
         })
@@ -82,14 +93,17 @@ class OperacaoForm extends Component {
     return card.balance + operand
   }
 
-  prepareLog = ({number, balance}, futureBalance, uid) => ({
-    type: 'v',
-    timestamp: Date.now(),
-    card: number,
-    userId: uid,
-    balanceBefore: balance,
-    balanceAfter: this.calcFutureBalance(),
-  })
+  prepareLog = ({ number, balance }, futureBalance, uid) => {
+    const { op } = this.props
+    return {
+      type: op,
+      timestamp: Date.now(),
+      card: number,
+      userId: uid,
+      balanceBefore: balance,
+      balanceAfter: futureBalance,
+    }
+  }
 
   handleCloseError = () => {
     this.setState({ error: null })
@@ -123,18 +137,31 @@ class OperacaoForm extends Component {
     const {
       user: { uid },
     } = this.props
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const batch = db.batch()
       const cardRef = db.collection('cards').doc(card.id)
-      batch.set(cardRef, {balance: futureBalance}, {merge: true})
+      batch.set(cardRef, { balance: futureBalance }, { merge: true })
       const logRef = db.collection('logs').doc()
-      const logData = this.prepareLog(card, futureBalance, uid) 
+      const logData = this.prepareLog(card, futureBalance, uid)
       batch.set(logRef, logData)
-      batch.commit().then(() => resolve(logRef.id)).catch(() => resolve())
+      batch
+        .commit()
+        .then(() => resolve(logRef.id))
+        .catch(() => resolve())
     })
   }
-  
+
   handleSubmit = () => {
+    this.setState({ loadingPurchase: true })
+    const { onFinishOp, op } = this.props
+    const { card } = this.state
+    const futureBalance = this.calcFutureBalance()
+    const logId = await this.executeOperation(card, futureBalance)
+    if (!logId)
+      return this.setError('Ocorreu um erro ao tentar realizar a  operação')
+    card.balance = futureBalance
+    onFinishOp(card, { type: op, code: logId})
+    this.reset()
   }
 
   render = () => {
