@@ -5,6 +5,7 @@ import AppShell from './AppShell'
 import Home from './Home'
 import Cadastro from './Cadastro'
 import Operacao from './Operacao'
+import Finalizacao from './Finalizacao'
 
 export {
   Admin,
@@ -13,5 +14,7 @@ export {
   AppShell,
   Home,
   Cadastro,
-  Operacao
+  Operacao,
+  Consulta,
+  Finalizacao
 }
