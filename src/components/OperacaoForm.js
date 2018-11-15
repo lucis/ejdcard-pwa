@@ -151,7 +151,7 @@ class OperacaoForm extends Component {
     })
   }
 
-  handleSubmit = () => {
+  handleSubmit = async () => {
     this.setState({ loadingPurchase: true })
     const { onFinishOp, op } = this.props
     const { card } = this.state
