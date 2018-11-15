@@ -9,6 +9,7 @@ import RealInput from './RealInput'
 import OperacaoReview from './OperacaoReview'
 import ErrorSnack from '../components/ErrorSnack'
 import withExtenso from './withExtenso'
+import { withUser } from '../contexts/AuthContext'
 import firebase from 'firebase/app'
 require('firebase/firestore')
 
@@ -39,6 +40,7 @@ class OperacaoForm extends Component {
       if (query.empty)
         return this.setState({
           error: 'Não existe um cartão cadastrado com esse número',
+          pristine: true,
           loadingCard: false,
           cardNumber: ''
         })
@@ -52,7 +54,7 @@ class OperacaoForm extends Component {
           })
         }
         this.setState({
-          card,
+          card: {...card, id: docRef.id},
           pristine: false,
           loadingCard: false,
         })
@@ -80,6 +82,15 @@ class OperacaoForm extends Component {
     return card.balance + operand
   }
 
+  prepareLog = ({number, balance}, futureBalance, uid) => ({
+    type: 'v',
+    timestamp: Date.now(),
+    card: number,
+    userId: uid,
+    balanceBefore: balance,
+    balanceAfter: this.calcFutureBalance(),
+  })
+
   handleCloseError = () => {
     this.setState({ error: null })
   }
@@ -104,11 +115,27 @@ class OperacaoForm extends Component {
       card.active &&
       operationAmount &&
       futureBalance &&
-      futureBalance > 0
+      futureBalance >= 0
     )
   }
 
-  handleSubmit = () => {}
+  executeOperation = (card, futureBalance) => {
+    const {
+      user: { uid },
+    } = this.props
+    return new Promise((resolve) => {
+      const batch = db.batch()
+      const cardRef = db.collection('cards').doc(card.id)
+      batch.set(cardRef, {balance: futureBalance}, {merge: true})
+      const logRef = db.collection('logs').doc()
+      const logData = this.prepareLog(card, futureBalance, uid) 
+      batch.set(logRef, logData)
+      batch.commit().then(() => resolve(logRef.id)).catch(() => resolve())
+    })
+  }
+  
+  handleSubmit = () => {
+  }
 
   render = () => {
     const { op, centavosParaExtenso } = this.props
@@ -207,4 +234,4 @@ class OperacaoForm extends Component {
   }
 }
 
-export default withExtenso(withStyles(styles)(OperacaoForm))
+export default withUser(withExtenso(withStyles(styles)(OperacaoForm)))

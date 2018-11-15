@@ -62,21 +62,11 @@ class Venda extends React.Component {
     this.setState({ error })
   }
 
-  handleSubmit = async () => {}
 
   handleReset = () => {
     this.setState({
       showResumo: false,
     })
-  }
-
-  checkValidity = () => {
-    const {
-      card: { name, number },
-    } = this.state
-    if (!name || name.length < 5 || !number || number > 700 || number < 0)
-      return
-    this.setState({ isValid: true })
   }
 
   handleCloseError = () => {
@@ -112,7 +102,6 @@ class Venda extends React.Component {
                   <Button
                     variant="contained"
                     color="primary"
-                    disabled={!isValid}
                     onClick={this.handleSubmit}
                     className={classes.button}
                   >
