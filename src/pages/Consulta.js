@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react'
-import CircularProgress from '@material-ui/core/CircularProgress'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
@@ -7,9 +6,9 @@ import { withStyles } from '@material-ui/core/styles'
 import { debounce } from 'lodash'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
+import SearchIcon from '@material-ui/icons/Search'
 import ErrorSnack from '../components/ErrorSnack'
-import withExtenso from '../components/withExtenso'
-import { withUser } from '../contexts/AuthContext'
+import DetalheCartao from '../components/DetalheCartao'
 import firebase from 'firebase/app'
 require('firebase/firestore')
 
@@ -19,60 +18,37 @@ const db = firebase.firestore()
 
 class Consulta extends Component {
   state = {
-    pristine: true,
     loadingCard: false,
-    loadingPurchase: false,
     cardNumber: '',
-    operationAmount: 0,
+    name: '',
     card: null,
     error: null,
+    showInfo: false,
   }
 
-  reset = () => {
-    this.setState({
-      pristine: true,
-      loadingCard: false,
-      loadingPurchase: false,
-      cardNumber: '',
-      operationAmount: 0,
-      card: null,
-      error: null,
-    })
-  }
   searchCardDebounced = debounce(async () => {
     let { cardNumber } = this.state
-    // FIX - CardNumbers should be string in Firebase
     this.setState({ loadingCard: true, card: null })
     try {
       const query = await db
         .collection('cards')
-        .where('number', '==', cardNumber)
+        .where('number', '==', String(Number(cardNumber)))
         .get()
       if (query.empty)
         return this.setState({
           error: 'Não existe um cartão cadastrado com esse número',
-          pristine: true,
           loadingCard: false,
           cardNumber: '',
         })
       query.forEach(docRef => {
         const card = docRef.data()
-        if (!card.active) {
-          return this.setState({
-            error: 'O cartão com este número foi desativado',
-            loadingCard: false,
-            cardNumber: '',
-          })
-        }
         this.setState({
           card: { ...card, id: docRef.id },
-          pristine: false,
           loadingCard: false,
         })
       })
     } catch (e) {
       this.setState({
-        pristine: true,
         error: 'Ocorreu um erro ao buscar dados do cartão',
         loadingCard: false,
       })
@@ -81,28 +57,15 @@ class Consulta extends Component {
 
   onChangeNumber = e => {
     const cardNumber = e.target.value
-    this.setState({ cardNumber, error: null }, this.searchCardDebounced)
+    this.setState(
+      { cardNumber, error: null, showInfo: null },
+      this.searchCardDebounced
+    )
   }
 
-  calcFutureBalance = () => {
-    const { card, operationAmount } = this.state
-    if (!card || !card.balance) return
-    const { op } = this.props
-    let operand = operationAmount
-    if (op === 'v') operand = operand * -1
-    return card.balance + operand
-  }
-
-  prepareLog = ({ number, balance }, futureBalance, uid) => {
-    const { op } = this.props
-    return {
-      type: op,
-      timestamp: Date.now(),
-      card: number,
-      userId: uid,
-      balanceBefore: balance,
-      balanceAfter: futureBalance,
-    }
+  onChangeName = e => {
+    const name = e.target.value
+    this.setState({ name, error: null, showInfo: null })
   }
 
   handleCloseError = () => {
@@ -110,133 +73,74 @@ class Consulta extends Component {
   }
 
   checkValid = () => {
-    const {
-      pristine,
-      loadingCard,
-      cardNumber,
-      operationAmount,
-      card,
-    } = this.state
-
-    const futureBalance = this.calcFutureBalance()
-    return (
-      !pristine &&
-      !loadingCard &&
-      cardNumber &&
-      card &&
-      card.number &&
-      cardNumber === card.number &&
-      card.active &&
-      operationAmount &&
-      futureBalance &&
-      futureBalance >= 0
-    )
-  }
-
-  executeOperation = (card, futureBalance) => {
-    const {
-      user: { uid },
-    } = this.props
-    return new Promise(resolve => {
-      const batch = db.batch()
-      const cardRef = db.collection('cards').doc(card.id)
-      batch.set(cardRef, { balance: futureBalance }, { merge: true })
-      const logRef = db.collection('logs').doc()
-      const logData = this.prepareLog(card, futureBalance, uid)
-      batch.set(logRef, logData)
-      batch
-        .commit()
-        .then(() => resolve(logRef.id))
-        .catch(() => resolve())
-    })
+    const { name, card } = this.state
+    if (!name || !card || !card.name) return false
+    return card.name.slice(0, 2).toLowerCase() == name.slice(0, 2).toLowerCase()
   }
 
   handleSubmit = async () => {
-    this.setState({ loadingPurchase: true })
-    const { onFinishOp, op } = this.props
-    const { card } = this.state
-    const futureBalance = this.calcFutureBalance()
-    const logId = await this.executeOperation(card, futureBalance)
-    if (!logId)
-      return this.setError('Ocorreu um erro ao tentar realizar a  operação')
-    card.balance = futureBalance
-    onFinishOp(card, { type: op, code: logId })
-    this.reset()
+    this.setState({ showInfo: true })
   }
 
   render = () => {
-    const { op, centavosParaExtenso } = this.props
-
-    const {
-      pristine,
-      loadingCard,
-      loadingPurchase,
-      cardNumber,
-      operationAmount,
-      card,
-      error,
-    } = this.state
+    const { loadingCard, cardNumber, card, name, error, showInfo } = this.state
 
     return (
       <Fragment>
         <Card>
           <CardContent>
-          <Typography component="h1" variant="h4" align="center">
+            <Typography component="h1" variant="h4" align="center">
               Consulta
             </Typography>
             <div
               style={{
                 display: 'flex',
-                alignItems: 'center',
+                alignItems: 'flex-end',
                 justifyContent: 'space-around',
               }}
             >
-              <div
-                style={{
-                  width: '50%',
-                  display: 'flex',
-                  alignItems: 'flex-end',
-                }}
+              <TextField
+                style={{ paddingRight: 15, width: '35%' }}
+                disabled={loadingCard}
+                onChange={this.onChangeNumber}
+                id="cardNumber"
+                value={cardNumber}
+                label="Cartão"
+                type="number"
+                InputLabelProps={{ shrink: true }}
+                margin="normal"
+              />
+              <TextField
+                style={{ paddingRight: 15 }}
+                disabled={loadingCard}
+                onChange={this.onChangeName}
+                id="cardNumber"
+                value={name}
+                label="Seu primeiro nome"
+                InputLabelProps={{ shrink: true }}
+                margin="normal"
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={!this.checkValid() || showInfo}
+                onClick={this.handleSubmit}
+                style={{ marginBottom: 8 }}
               >
-                <TextField
-                  style={{ paddingRight: 15, width: '70%' }}
-                  disabled={loadingCard}
-                  onChange={this.onChangeNumber}
-                  id="cardNumber"
-                  value={cardNumber}
-                  label="Cartão"
-                  type="number"
-                  InputLabelProps={{ shrink: true }}
-                  margin="normal"
-                />
-                <div style={{ height: '25px', paddingBottom: '35px' }}>
-                  {loadingCard && <CircularProgress size={25} />}
-                </div>
-              </div>
-              <div style={{ width: '45%' }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  disabled={!this.checkValid()}
-                  onClick={this.handleSubmit}
-                >
-                  {loadingPurchase && (
-                    <CircularProgress
-                      style={{ color: 'white' }}
-                      size={20}
-                      thickness={3}
-                    />
-                  )}
-                  {!loadingPurchase && op === 'v' ? 'Debitar' : 'Creditar'}
-                </Button>
-              </div>
+                <SearchIcon />
+              </Button>
             </div>
+            {showInfo && <DetalheCartao card={card} />}
+            <ErrorSnack
+              visible={!!error}
+              value={error}
+              onClose={this.handleCloseError}
+            />
           </CardContent>
         </Card>
-        <ErrorSnack value={error} onClose={this.handleCloseError} />
       </Fragment>
     )
   }
 }
 
-export default withUser(withExtenso(withStyles(styles)(Consulta)))
+export default withStyles(styles)(Consulta)
