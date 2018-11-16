@@ -6,7 +6,7 @@ TO DO
 # Busca de Usuário por UID no Admin
 # Add info user in Menu
 # Fix PC design
-
+# Set a cloud function to add role to a new user
 
 
 DONEEEEE
