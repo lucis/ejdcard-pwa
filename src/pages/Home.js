@@ -55,7 +55,7 @@ const Home = (props) => {
         role: 'u',
       },
       {
-        title: 'Consultar Saldo',
+        title: 'Consultar Cartão',
         subtitle:
           'Você só vai precisar do número do cartão e das duas letras iniciais do nome do portador.',
         path: 'consulta',

@@ -5,8 +5,8 @@ import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import { withStyles } from '@material-ui/core/styles'
 import { debounce } from 'lodash'
-import RealInput from '../components/RealInput'
-import OperacaoReview from '../components/OperacaoReview'
+import Card from '@material-ui/core/Card'
+import CardContent from '@material-ui/core/CardContent'
 import ErrorSnack from '../components/ErrorSnack'
 import withExtenso from '../components/withExtenso'
 import { withUser } from '../contexts/AuthContext'
@@ -160,7 +160,7 @@ class Consulta extends Component {
     if (!logId)
       return this.setError('Ocorreu um erro ao tentar realizar a  operação')
     card.balance = futureBalance
-    onFinishOp(card, { type: op, code: logId})
+    onFinishOp(card, { type: op, code: logId })
     this.reset()
   }
 
@@ -179,82 +179,60 @@ class Consulta extends Component {
 
     return (
       <Fragment>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <div
-            style={{ width: '50%', display: 'flex', alignItems: 'flex-end' }}
-          >
-            <TextField
-              style={{ paddingRight: 15, width: '70%' }}
-              disabled={loadingCard}
-              onChange={this.onChangeNumber}
-              id="cardNumber"
-              value={cardNumber}
-              label="Cartão"
-              type="number"
-              InputLabelProps={{ shrink: true }}
-              margin="normal"
-            />
-            <div style={{ height: '25px', paddingBottom: '35px' }}>
-              {loadingCard && <CircularProgress size={25} />}
-            </div>
-          </div>
-          <div style={{ width: '45%' }}>
-            <RealInput
-              label="Valor"
-              initialValue={0}
-              disabled={false}
-              onChange={({ cents }) => {
-                this.setState({ operationAmount: cents })
+        <Card>
+          <CardContent>
+          <Typography component="h1" variant="h4" align="center">
+              Consulta
+            </Typography>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-around',
               }}
-            />
-          </div>
-        </div>
-
-        <Typography
-          style={{
-            textTransform: 'uppercase',
-            backgroundColor: '#ccc',
-            fontSize: 10,
-          }}
-          variant="subtitle2"
-          color="textSecondary"
-          align="center"
-        >
-          {centavosParaExtenso(operationAmount) || ' -- '}
-        </Typography>
-        {
-          <OperacaoReview
-            visible={!pristine}
-            card={card}
-            futureBalance={this.calcFutureBalance()}
-            disabled={loadingPurchase}
-          />
-        }
-        <div
-          style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 15 }}
-        >
-          <Button
-            variant="contained"
-            color="primary"
-            disabled={!this.checkValid()}
-            onClick={this.handleSubmit}
-          >
-            {loadingPurchase && (
-              <CircularProgress
-                style={{ color: 'white' }}
-                size={20}
-                thickness={3}
-              />
-            )}
-            {!loadingPurchase && op === 'v' ? 'Debitar' : 'Creditar'}
-          </Button>
-        </div>
+            >
+              <div
+                style={{
+                  width: '50%',
+                  display: 'flex',
+                  alignItems: 'flex-end',
+                }}
+              >
+                <TextField
+                  style={{ paddingRight: 15, width: '70%' }}
+                  disabled={loadingCard}
+                  onChange={this.onChangeNumber}
+                  id="cardNumber"
+                  value={cardNumber}
+                  label="Cartão"
+                  type="number"
+                  InputLabelProps={{ shrink: true }}
+                  margin="normal"
+                />
+                <div style={{ height: '25px', paddingBottom: '35px' }}>
+                  {loadingCard && <CircularProgress size={25} />}
+                </div>
+              </div>
+              <div style={{ width: '45%' }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={!this.checkValid()}
+                  onClick={this.handleSubmit}
+                >
+                  {loadingPurchase && (
+                    <CircularProgress
+                      style={{ color: 'white' }}
+                      size={20}
+                      thickness={3}
+                    />
+                  )}
+                  {!loadingPurchase && op === 'v' ? 'Debitar' : 'Creditar'}
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
         <ErrorSnack value={error} onClose={this.handleCloseError} />
       </Fragment>
     )
