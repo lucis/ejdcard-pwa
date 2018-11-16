@@ -226,7 +226,7 @@ class AppShell extends React.Component {
           />
           <Route
             path={`${match.path}finalizacao`}
-            component={Finalizacao}
+            render={props => <Operacao op="f" {...props} />}
           />
           <Route path={`${match.path}cadastro`} component={Cadastro} />
           <Route path={`${match.path}consulta`} component={Consulta} />

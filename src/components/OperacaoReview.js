@@ -85,7 +85,7 @@ const OperacaoReview = props => {
               component="h2"
               color={getColorForTypo('textSecondary')}
             >
-              {cellphone}
+              {cellphone || ' -- '}
             </Typography>
           </div>
         </div>

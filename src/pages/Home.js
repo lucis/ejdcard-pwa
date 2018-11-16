@@ -96,7 +96,7 @@ const Home = (props) => {
       ))
   }
 
-  const firstName = name.split[' '][0]
+  const firstName = name.split(' ')[0]
 
   return (
     <div>
@@ -114,8 +114,7 @@ const Home = (props) => {
 }
 
 Home.propTypes = {
-  classes: PropTypes.object.isRequired,
-  roles: PropTypes.string.isRequired,
+  classes: PropTypes.object.isRequired
 }
 
 export default withUser(withRouter(withStyles(styles)(Home)))

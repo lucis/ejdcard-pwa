@@ -21,7 +21,7 @@ class OperacaoForm extends Component {
   state = {
     pristine: true,
     loadingCard: false,
-    loadingPurchase: false,
+    loadingOperation: false,
     cardNumber: '',
     operationAmount: 0,
     card: null,
@@ -32,7 +32,7 @@ class OperacaoForm extends Component {
     this.setState({
       pristine: true,
       loadingCard: false,
-      loadingPurchase: false,
+      loadingOperation: false,
       cardNumber: '',
       operationAmount: 0,
       card: null,
@@ -86,8 +86,9 @@ class OperacaoForm extends Component {
 
   calcFutureBalance = () => {
     const { card, operationAmount } = this.state
-    if (!card || !card.balance) return
+    if (!card) return null
     const { op } = this.props
+    if (!'vu'.includes(op)) return card.balance
     let operand = operationAmount
     if (op === 'v') operand = operand * -1
     return card.balance + operand
@@ -109,6 +110,8 @@ class OperacaoForm extends Component {
     this.setState({ error: null })
   }
 
+  isFinalizacao = () => this.props.op === 'f'
+
   checkValid = () => {
     const {
       pristine,
@@ -119,6 +122,7 @@ class OperacaoForm extends Component {
     } = this.state
 
     const futureBalance = this.calcFutureBalance()
+
     return (
       !pristine &&
       !loadingCard &&
@@ -127,22 +131,25 @@ class OperacaoForm extends Component {
       card.number &&
       cardNumber === card.number &&
       card.active &&
-      operationAmount &&
-      futureBalance &&
-      futureBalance >= 0
+      (this.isFinalizacao()
+        ? true
+        : operationAmount &&
+          Number(operationAmount) !== 0 &&
+          futureBalance !== null &&
+          futureBalance >= 0)
     )
   }
 
-  executeOperation = (card, futureBalance) => {
+  executeOperation = (card, patch) => {
     const {
       user: { uid },
     } = this.props
     return new Promise(resolve => {
       const batch = db.batch()
       const cardRef = db.collection('cards').doc(card.id)
-      batch.set(cardRef, { balance: futureBalance }, { merge: true })
+      batch.set(cardRef, patch, { merge: true })
       const logRef = db.collection('logs').doc()
-      const logData = this.prepareLog(card, futureBalance, uid)
+      const logData = this.prepareLog(card, patch.balance, uid)
       batch.set(logRef, logData)
       batch
         .commit()
@@ -152,25 +159,38 @@ class OperacaoForm extends Component {
   }
 
   handleSubmit = async () => {
-    this.setState({ loadingPurchase: true })
+    this.setState({ loadingOperation: true })
     const { onFinishOp, op } = this.props
     const { card } = this.state
     const futureBalance = this.calcFutureBalance()
-    const logId = await this.executeOperation(card, futureBalance)
+    const patch = {
+      balance: futureBalance,
+      active: !this.isFinalizacao(),
+    }
+    const logId = await this.executeOperation(card, patch)
     if (!logId)
       return this.setError('Ocorreu um erro ao tentar realizar a  operação')
     card.balance = futureBalance
-    onFinishOp(card, { type: op, code: logId})
+    const cardBackup = { ...card }
+    const { operationAmount: amount } = this.state
     this.reset()
+    onFinishOp(cardBackup, { type: op, code: logId, amount })
+  }
+
+  setError = error => {
+    this.setState({ error, loadingOperation: false })
   }
 
   render = () => {
     const { op, centavosParaExtenso } = this.props
 
+    const btnText = { v: 'Debitar', u: 'Creditar', f: 'Finalizar' }[op]
+
+    const isFinalizacao = this.isFinalizacao()
     const {
       pristine,
       loadingCard,
-      loadingPurchase,
+      loadingOperation,
       cardNumber,
       operationAmount,
       card,
@@ -205,35 +225,39 @@ class OperacaoForm extends Component {
             </div>
           </div>
           <div style={{ width: '45%' }}>
-            <RealInput
-              label="Valor"
-              initialValue={0}
-              disabled={false}
-              onChange={({ cents }) => {
-                this.setState({ operationAmount: cents })
-              }}
-            />
+            {!isFinalizacao && (
+              <RealInput
+                label="Valor"
+                initialValue={0}
+                disabled={false}
+                onChange={({ cents }) => {
+                  this.setState({ operationAmount: cents })
+                }}
+              />
+            )}
           </div>
         </div>
 
-        <Typography
-          style={{
-            textTransform: 'uppercase',
-            backgroundColor: '#ccc',
-            fontSize: 10,
-          }}
-          variant="subtitle2"
-          color="textSecondary"
-          align="center"
-        >
-          {centavosParaExtenso(operationAmount) || ' -- '}
-        </Typography>
+        {!isFinalizacao && (
+          <Typography
+            style={{
+              textTransform: 'uppercase',
+              backgroundColor: '#ccc',
+              fontSize: 10,
+            }}
+            variant="subtitle2"
+            color="textSecondary"
+            align="center"
+          >
+            {centavosParaExtenso(operationAmount) || ' -- '}
+          </Typography>
+        )}
         {
           <OperacaoReview
             visible={!pristine}
             card={card}
             futureBalance={this.calcFutureBalance()}
-            disabled={loadingPurchase}
+            disabled={loadingOperation}
           />
         }
         <div
@@ -245,14 +269,14 @@ class OperacaoForm extends Component {
             disabled={!this.checkValid()}
             onClick={this.handleSubmit}
           >
-            {loadingPurchase && (
+            {loadingOperation && (
               <CircularProgress
                 style={{ color: 'white' }}
                 size={20}
                 thickness={3}
               />
             )}
-            {!loadingPurchase && op === 'v' ? 'Debitar' : 'Creditar'}
+            {!loadingOperation && btnText}
           </Button>
         </div>
         <ErrorSnack value={error} onClose={this.handleCloseError} />

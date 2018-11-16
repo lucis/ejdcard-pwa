@@ -39,6 +39,9 @@ const styles = ({ breakpoints, spacing: { unit } }) => ({
     display: 'flex',
     justifyContent: 'flex-end',
   },
+  returnButton: {
+    marginTop: 10
+  }
 })
 
 
@@ -63,7 +66,7 @@ class Operacao extends React.Component {
 
 
     const title = {v: 'Venda', u: 'Recarga', 'f': 'Finalização'}[op]
-    const steps = ['Dados', 'Resumo']
+    const steps = ['Dados da Operação', 'Resumo']
 
     return (
       <Fragment>
@@ -92,7 +95,7 @@ class Operacao extends React.Component {
                     variant="contained"
                     color="primary"
                     onClick={this.handleReset}
-                    className={classes.button}
+                    className={classes.returnButton}
                   >
                     {'Nova ' + title}
                   </Button>

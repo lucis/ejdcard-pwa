@@ -5,10 +5,10 @@ import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import { withStyles } from '@material-ui/core/styles'
 import { debounce } from 'lodash'
-import RealInput from './RealInput'
-import OperacaoReview from './OperacaoReview'
+import RealInput from '../components/RealInput'
+import OperacaoReview from '../components/OperacaoReview'
 import ErrorSnack from '../components/ErrorSnack'
-import withExtenso from './withExtenso'
+import withExtenso from '../components/withExtenso'
 import { withUser } from '../contexts/AuthContext'
 import firebase from 'firebase/app'
 require('firebase/firestore')
@@ -151,7 +151,7 @@ class Consulta extends Component {
     })
   }
 
-  handleSubmit = () => {
+  handleSubmit = async () => {
     this.setState({ loadingPurchase: true })
     const { onFinishOp, op } = this.props
     const { card } = this.state
