@@ -100,7 +100,7 @@ const DetalheCartao = ({
           </div>
         </div>
       </div>
-      {number && <Typography variant="h6" align="center">Histórico</Typography>}
+      {number && <Typography variant="h6" style={{marginTop: 15}} align="center">Histórico</Typography>}
       {number && <HistoricoCartao cardNumber={number} />}
     </Fragment>
   )
