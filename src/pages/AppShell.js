@@ -23,7 +23,7 @@ import { withRouter } from 'react-router-dom'
 import { withUser } from '../contexts/AuthContext'
 
 import 'firebase/auth'
-import { Admin, Home, Cadastro, Operacao, Finalizacao, Consulta} from './'
+import { Admin, Home, Cadastro, Operacao, Consulta} from './'
 
 const drawerWidth = 240
 

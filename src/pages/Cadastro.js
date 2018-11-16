@@ -85,7 +85,7 @@ class Cadastro extends React.Component {
     timestamp: Date.now(),
     card: number,
     userId: uid,
-    balanceBefore: balance,
+    balanceBefore: 0,
     balanceAfter: balance,
   })
 

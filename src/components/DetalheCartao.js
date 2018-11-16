@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import RealSpan from './RealSpan'
 import Typography from '@material-ui/core/Typography'
-
+import HistoricoCartao from './HistoricoCartao'
 
 const styles = {
   pos: {
@@ -14,14 +14,24 @@ const styles = {
     justifyContent: 'space-between',
   },
   real: {
-    fontSize: '19px'
-  }
+    fontSize: '19px',
+  },
 }
 
-const DetalheCartao = ({classes,  card: { name, balance, active, cellphone }}) => {
+const DetalheCartao = ({
+  classes,
+  card: { number, name, balance, active, cellphone },
+}) => {
   return (
+    <Fragment>
       <div className={classes.root}>
-        <div style={{ borderRight: '1px solid #ccc', paddingRight: '10px', width: '60%' }}>
+        <div
+          style={{
+            borderRight: '1px solid #ccc',
+            paddingRight: '10px',
+            width: '60%',
+          }}
+        >
           <div>
             <Typography
               className={classes.title}
@@ -30,11 +40,7 @@ const DetalheCartao = ({classes,  card: { name, balance, active, cellphone }}) =
             >
               donx
             </Typography>
-            <Typography
-              variant="h6"
-              component="h2"
-              color={'secondary'}
-            >
+            <Typography variant="h6" component="h2" color={'secondary'}>
               {name}
             </Typography>
           </div>
@@ -46,11 +52,7 @@ const DetalheCartao = ({classes,  card: { name, balance, active, cellphone }}) =
             >
               celular
             </Typography>
-            <Typography
-              variant="subtitle1"
-              component="h2"
-              color='secondary'
-            >
+            <Typography variant="subtitle1" component="h2" color="secondary">
               {cellphone || ' -- '}
             </Typography>
           </div>
@@ -59,7 +61,7 @@ const DetalheCartao = ({classes,  card: { name, balance, active, cellphone }}) =
           <div>
             <Typography
               className={classes.title}
-              color='textSecondary'
+              color="textSecondary"
               align="right"
               gutterBottom
             >
@@ -69,7 +71,7 @@ const DetalheCartao = ({classes,  card: { name, balance, active, cellphone }}) =
               variant="h6"
               className={classes.real}
               component={RealSpan}
-              color='primary'
+              color="primary"
               align="right"
               noWrap
             >
@@ -79,7 +81,7 @@ const DetalheCartao = ({classes,  card: { name, balance, active, cellphone }}) =
           <div style={{ paddingTop: 10 }}>
             <Typography
               className={classes.title}
-              color='textSecondary'
+              color="textSecondary"
               align="right"
               gutterBottom
             >
@@ -98,12 +100,14 @@ const DetalheCartao = ({classes,  card: { name, balance, active, cellphone }}) =
           </div>
         </div>
       </div>
+      {number && <HistoricoCartao cardNumber={number} />}
+    </Fragment>
   )
 }
 
 DetalheCartao.propTypes = {
   classes: PropTypes.object.isRequired,
-  card: PropTypes.object
+  card: PropTypes.object,
 }
 
 export default withStyles(styles)(DetalheCartao)
