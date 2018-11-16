@@ -32,12 +32,13 @@ const styles = theme => ({
     },
   },
   paper: {
-    marginTop: theme.spacing.unit * 8,
+    marginTop: theme.spacing.unit * 4,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
       .spacing.unit * 3}px`,
+    marginBottom: `${theme.spacing.unit * 4}px`
   },
 })
 
@@ -105,8 +106,8 @@ class Login extends Component {
             .set({ lastLogin: Date.now() }, { merge: true })
         }
         setUser(userFromDb)
-        hideLoading()
         this.setState({ redirectTo: (state && state.from) || { pathname: '/app' } })
+        hideLoading()
       } else {
         hideLoading()
       }

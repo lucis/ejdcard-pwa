@@ -12,6 +12,7 @@ const styles = {
   root: {
     display: 'flex',
     justifyContent: 'space-between',
+    marginTop: 15
   },
   real: {
     fontSize: '19px',

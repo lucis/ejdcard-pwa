@@ -112,7 +112,6 @@ class Consulta extends Component {
               />
               <TextField
                 style={{ paddingRight: 15 }}
-                disabled={loadingCard}
                 onChange={this.onChangeName}
                 id="cardNumber"
                 value={name}
