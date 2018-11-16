@@ -9,6 +9,12 @@ import IconButton from '@material-ui/core/IconButton'
 import Done from '@material-ui/icons/Done'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import firebase from 'firebase/app'
+import InputLabel from '@material-ui/core/InputLabel'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import FormControl from '@material-ui/core/FormControl'
+import SearchIcon from '@material-ui/icons/Search'
+import Fuse from 'fuse.js'
+
 require('firebase/firestore')
 
 const loader = null
@@ -69,13 +75,14 @@ class UserRoleList extends Component {
     this.setUserLoading(uid, false)
   }
 
-  handleSearch = searchTerm => {
-    const { users, usersIds } = this.state
-    const userIdsShowed = usersIds
-      .map(uid => users[uid])
-      .filter(() => true)
-      .map(user => user.uid)
-    this.setState({ searchTerm, userIdsShowed })
+  handleSearchFor = itens => {
+    console.log(itens)
+    const fuse = new Fuse(itens, { threshold: 0.3, keys: ['name', 'email'] })
+    return e => {
+      const searchTerm = e.target.value
+      const userIdsShowed = fuse.search(searchTerm).map(item => item.uid)
+      this.setState({ searchTerm, userIdsShowed })
+    }
   }
 
   setUserRoles = (uid, roles) => {
@@ -120,13 +127,26 @@ class UserRoleList extends Component {
   }
 
   render = () => {
-    const { users, userIdsShowed, loading } = this.state
+    const { users, userIdsShowed, loading, searchTerm, usersIds} = this.state
     if (loading) return loader
-    if (!userIdsShowed.length) return null
+    if (!!searchTerm.trim() && !userIdsShowed.length) return null
+    const userIdsUsed = searchTerm.trim() ? userIdsShowed : usersIds
     return (
       <div>
+        <FormControl fullWidth>
+          <Input
+            id="adornment-amount"
+            value={searchTerm}
+            onChange={this.handleSearchFor(usersIds.map(uid => users[uid]))}
+            startAdornment={
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            }
+          />
+        </FormControl>
         <List dense>
-          {userIdsShowed.map(uid => users[uid]).map(this.renderListItem)}
+          {userIdsUsed.map(uid => users[uid]).map(this.renderListItem)}
         </List>
       </div>
     )

@@ -6,6 +6,7 @@
     "@material-ui/core": "^3.4.0",
     "@material-ui/icons": "^3.0.1",
     "firebase": "^5.5.7",
+    "fuse.js": "^3.3.0",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
     "numero-por-extenso": "^1.0.5",

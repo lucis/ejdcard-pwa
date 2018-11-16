@@ -1,15 +1,16 @@
 TO DO
-# Check role on enter page
-# Landing Page
-# Verificar PWA
 # Busca de Usuários no Admin
 # Busca de Usuário por UID no Admin
+# Landing Page ( Login )
+# Check role on enter page
+# Verificar  
 # Add info user in Menu
 # Fix PC design
 # Set a cloud function to add role to a new user
 
 
 DONEEEEE
+# PWA - DONE
 # Fix Snackbar on Mobile - DONE
 # 7 !== 007 - DONE - DONE
 # Consultar cartão, mostrar saldo e histórico - DONE
