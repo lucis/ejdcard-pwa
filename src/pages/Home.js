@@ -31,8 +31,6 @@ const Home = (props) => {
     history,
   } = props
 
-  console.log(roles)
-  
   const getOptionsForRoles = roles => {
     const options = [
       {
