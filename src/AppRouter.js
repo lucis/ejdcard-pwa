@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { BrowserRouter, Route } from 'react-router-dom'
+import { BrowserRouter, Route, Redirect } from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { Landing, Login, AppShell } from './pages'
 import { withLoading } from './contexts/LoadingContext'
@@ -16,7 +16,7 @@ class AppRouter extends Component {
               <CircularProgress style={{top: '50%', left: '50%', position: 'absolute'}} />
             </div>
           )}
-          <Route path="/" exact component={Landing} />
+          <Route path="/" exact render={() => <Redirect to={{ pathname: `/login` }} />} />
           <Route path="/login/" component={Login} />
           <PrivateRoute path="/app/" component={AppShell} />
         </div>
