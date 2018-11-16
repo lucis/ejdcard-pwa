@@ -71,7 +71,7 @@ class Login extends Component {
 
         const query = await db
           .collection('users')
-          .where('authId', '==', user.uid)
+          .where('uid', '==', user.uid)
           .limit(1)
           .get()
 
@@ -106,7 +106,7 @@ class Login extends Component {
         }
         setUser(userFromDb)
         hideLoading()
-        this.setState({ redirectTo: state.from || { pathname: '/app' } })
+        this.setState({ redirectTo: (state && state.from) || { pathname: '/app' } })
       } else {
         hideLoading()
       }

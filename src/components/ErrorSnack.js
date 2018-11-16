@@ -30,7 +30,7 @@ const styles = theme => ({
 const ErrorSnack = ({classes, value, onClose}) => {
     return (<Snackbar
         anchorOrigin={{
-          vertical: 'bottom',
+          vertical: 'top',
           horizontal: 'center'
         }}
         open={Boolean(value)}
