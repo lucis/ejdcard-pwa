@@ -80,7 +80,7 @@ class Cadastro extends React.Component {
     this.setState({ error, loading: false })
   }
 
-  prepareLog = ({number, balance}, uid) => ({
+  prepareLog = ({ number, balance }, uid) => ({
     type: 'c',
     timestamp: Date.now(),
     card: number,
@@ -93,14 +93,17 @@ class Cadastro extends React.Component {
     const {
       user: { uid },
     } = this.props
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const batch = db.batch()
       const cardRef = db.collection('cards').doc()
       batch.set(cardRef, card)
       const logRef = db.collection('logs').doc()
       const logData = this.prepareLog(card, uid)
       batch.set(logRef, logData)
-      batch.commit().then(() => resolve(logRef.id)).catch(() => resolve())
+      batch
+        .commit()
+        .then(() => resolve(logRef.id))
+        .catch(() => resolve())
     })
   }
 
@@ -116,17 +119,19 @@ class Cadastro extends React.Component {
     this.setState({ loading: true })
     const { card: cardData } = this.state
     const card = { ...cardData }
+    card.number = String(Number(card.number))
     const invalidNumber = await this.numberAlreadyTaken(card.number)
     if (invalidNumber)
       return this.setError('Já existe um cartão cadastrado com esse número')
     if (card.cellphone && card.cellphone.length < 14) card.cellphone = null
     const logId = await this.addCardToDatabase(card)
-    if (!logId) return this.setError('Ocorreu um erro ao tentar adicionar o cartão')
+    if (!logId)
+      return this.setError('Ocorreu um erro ao tentar adicionar o cartão')
     this.setState({
       activeStep: 1,
       loading: false,
       operation: { type: 'c', code: logId },
-      card
+      card,
     })
   }
 
@@ -151,13 +156,19 @@ class Cadastro extends React.Component {
     const {
       card: { name, number },
     } = this.state
-    const clause =  (!name || name.length < 5 || !number || Number.isNaN(Number(number)) || number > 700 || number < 0)
+    const clause =
+      !name ||
+      name.length < 5 ||
+      !number ||
+      Number.isNaN(Number(number)) ||
+      number > 700 ||
+      number < 0
     this.setState({ isValid: !clause })
   }
 
   onChangeField = field => e => {
     this.setState(
-      { card: { ...this.state.card, [field]: e.target.value } },
+      { card: { ...this.state.card, [field]: e.target.value }, error: null},
       this.checkValidity
     )
   }
@@ -218,10 +229,14 @@ class Cadastro extends React.Component {
                   {!loading && (activeStep === 0 ? 'Cadastrar' : 'Novo')}
                 </Button>
               </div>
+              <ErrorSnack
+                visible={!!error}
+                value={error}
+                onClose={this.handleCloseError}
+              />
             </React.Fragment>
           </Paper>
         </main>
-        <ErrorSnack value={error} onClose={this.handleCloseError} />
       </React.Fragment>
     )
   }

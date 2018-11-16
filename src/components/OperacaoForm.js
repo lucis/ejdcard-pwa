@@ -231,6 +231,7 @@ class OperacaoForm extends Component {
                 initialValue={0}
                 disabled={false}
                 onChange={({ cents }) => {
+                  this.handleCloseError()
                   this.setState({ operationAmount: cents })
                 }}
               />
@@ -279,7 +280,7 @@ class OperacaoForm extends Component {
             {!loadingOperation && btnText}
           </Button>
         </div>
-        <ErrorSnack value={error} onClose={this.handleCloseError} />
+        <ErrorSnack visible={!!error} value={error} onClose={this.handleCloseError} />
       </Fragment>
     )
   }
