@@ -1,15 +1,14 @@
 TO DO
-# Busca de Usuários no Admin
 # Busca de Usuário por UID no Admin
-# Landing Page ( Login )
 # Check role on enter page
-# Verificar  
 # Add info user in Menu
 # Fix PC design
-# Set a cloud function to add role to a new user
 
 
 DONEEEEE
+# Set a cloud function to add role to a new user -- DONE
+# Busca de Usuários no Admin -- DONE 
+# Landing Page ( Login ) -- DONE
 # PWA - DONE
 # Fix Snackbar on Mobile - DONE
 # 7 !== 007 - DONE - DONE
