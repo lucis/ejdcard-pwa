@@ -4,6 +4,7 @@ import classNames from 'classnames'
 import { withStyles } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Drawer from '@material-ui/core/Drawer'
+import Avatar from '@material-ui/core/Avatar'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import List from '@material-ui/core/List'
@@ -23,14 +24,14 @@ import { withRouter } from 'react-router-dom'
 import { withUser } from '../contexts/AuthContext'
 
 import 'firebase/auth'
-import { Admin, Home, Cadastro, Operacao, Consulta} from './'
+import { Admin, Home, Cadastro, Operacao, Consulta } from './'
 
 const drawerWidth = 240
 
 const styles = theme => ({
   root: {
     display: 'flex',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   toolbar: {
     paddingRight: 10, // keep right padding when drawer closed
@@ -103,6 +104,12 @@ const styles = theme => ({
   h5: {
     marginBottom: theme.spacing.unit * 2,
   },
+  userDiv: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'end',
+  },
 })
 
 class AppShell extends React.Component {
@@ -119,12 +126,9 @@ class AppShell extends React.Component {
   }
 
   render() {
-    const {
-      classes,
-      match,
-      setUser,
-    } = this.props
+    const { classes, match, user, setUser } = this.props
 
+    const { name, picUrl, email } = user
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -210,13 +214,18 @@ class AppShell extends React.Component {
               <ListItemText primary="Sair" />
             </ListItem>
           </List>
+          {user && (
+            <div className={classes.userDiv}>
+              <ListItem>
+                <Avatar alt={name} src={picUrl} />
+                <ListItemText primary={name} secondary={email} />
+              </ListItem>
+            </div>
+          )}
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
-          <Route
-            path={`${match.path}home`}
-            component={Home}
-          />
+          <Route path={`${match.path}home`} component={Home} />
           <Route
             path={`${match.path}venda`}
             render={props => <Operacao op="v" {...props} />}
