@@ -54,7 +54,6 @@ class Login extends Component {
 
   componentDidMount() {
     const {
-      user: userFromContext,
       setUser,
       showLoading,
       hideLoading,
@@ -164,7 +163,7 @@ class Login extends Component {
             >
               <span className="tc pl2 f6">Entre com Google</span>
             </GoogleLoginButton>
-            <Typography style={{marginTop: 10}} variant="subtitle2" align="center">Desenvolvido com {"<3"} por <a className={classes.link} target="_blank" href="https://instagram.com/luciannojunior">@luciannojunior</a></Typography>
+            <Typography style={{marginTop: 10}} variant="subtitle2" align="center">Desenvolvido com {"<3"} por <a className={classes.link} target="_blank" rel="noopener noreferrer" href="https://instagram.com/luciannojunior">@luciannojunior</a></Typography>
           </Paper>
         </main>
       </div>

@@ -1,11 +1,11 @@
 TO DO
 # Busca de Usuário por UID no Admin
 # Check role on enter page
-# Add info user in Menu
 # Fix PC design
-
+# Add userUid to Histórico
 
 DONEEEEE
+# Add info user in Menu -- DONE 
 # Set a cloud function to add role to a new user -- DONE
 # Busca de Usuários no Admin -- DONE 
 # Landing Page ( Login ) -- DONE

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { BrowserRouter, Route, Redirect } from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import { Landing, Login, AppShell } from './pages'
+import { Login, AppShell } from './pages'
 import { withLoading } from './contexts/LoadingContext'
 import PrivateRoute from './components/PrivateRoute'
 

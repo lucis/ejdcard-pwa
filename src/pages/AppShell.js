@@ -128,7 +128,9 @@ class AppShell extends React.Component {
   render() {
     const { classes, match, user, setUser } = this.props
 
-    const { name, picUrl, email } = user
+    const { name, picUrl, email, roles } = user
+
+    const home = <Redirect to={{ pathname: `${match.path}home` }} />
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -228,23 +230,23 @@ class AppShell extends React.Component {
           <Route path={`${match.path}home`} component={Home} />
           <Route
             path={`${match.path}venda`}
-            render={props => <Operacao op="v" {...props} />}
+            render={props => roles.includes('v') ? <Operacao op="v" {...props} /> : home}
           />
           <Route
             path={`${match.path}recarga`}
-            render={props => <Operacao op="u" {...props} />}
+            render={props => roles.includes('u') ? <Operacao op="u" {...props} /> : home}
           />
           <Route
             path={`${match.path}finalizacao`}
-            render={props => <Operacao op="f" {...props} />}
+            render={props => roles.includes('f') ?<Operacao op="f" {...props} /> : home}
           />
-          <Route path={`${match.path}cadastro`} component={Cadastro} />
+          <Route path={`${match.path}cadastro`} render={props => roles.includes('c') ?<Cadastro {...props} /> : home} />
           <Route path={`${match.path}consulta`} component={Consulta} />
           <Route path={`${match.path}admin`} component={Admin} />
           <Route
             exact
             path={match.path}
-            render={() => <Redirect to={{ pathname: `${match.path}home` }} />}
+            render={() => home}
           />
         </main>
       </div>

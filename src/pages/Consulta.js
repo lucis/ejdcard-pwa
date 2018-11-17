@@ -75,7 +75,7 @@ class Consulta extends Component {
   checkValid = () => {
     const { name, card } = this.state
     if (!name || !card || !card.name) return false
-    return name.slice(0, 2) == '20' || card.name.slice(0, 2).toLowerCase() === name.slice(0, 2).toLowerCase()
+    return name.slice(0, 2) === '20' || card.name.slice(0, 2).toLowerCase() === name.slice(0, 2).toLowerCase()
   }
 
   handleSubmit = async () => {
