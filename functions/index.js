@@ -36,6 +36,7 @@ exports.onNewLog = functions.firestore
         case 'c':
           newStat.incoming += diff
           newStat.cards++
+          break
         case 'u':
           newStat.incoming += diff
           break
@@ -50,6 +51,34 @@ exports.onNewLog = functions.firestore
       return statRef.set(newStat, { merge: true })
     })
   })
+
+exports.getProblematicCards = functions.https.onRequest((req, res) => {
+
+  return db.collection('cards').get().then(result => {
+    let cards = []
+    result.forEach(cardRef => {
+      const { balance, number } = cardRef.data()
+      if (balance % 50 !== 0){
+        cards.push(number)
+      }
+    })
+    return res.json(cards)
+  })
+}) 
+
+
+exports.getRemainingCargs = functions.https.onRequest((_, res) =>{
+  return db.collection('cards').where('active', '==', true).get().then(result => {
+    let remainingBalances = []
+    let totalBalance = 0
+    result.forEach(ref => {
+      let { balance } = ref.data()
+      remainingBalances.push(balance)
+      totalBalance += balance
+    })
+    return res.json({average: totalBalance / remainingBalances.length, remainingBalances, totalBalance })
+  })
+})
 
 exports.initialState = functions.https.onRequest((req, res) => {
   const statRef = db.collection('stats').doc('2018')
