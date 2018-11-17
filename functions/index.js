@@ -80,6 +80,30 @@ exports.getRemainingCargs = functions.https.onRequest((_, res) =>{
   })
 })
 
+exports.getBestSalespersons = functions.https.onRequest((_, res) => {
+  const usersSale = {}
+  const finalResult = {}
+
+  return db.collection('logs').where('type', '==', 'v').get().then((result) => {
+    result.forEach(docRef => {
+      const log = docRef.data()
+      const value = log.balanceBefore - log.balanceAfter
+      if (usersSale[log.userId]) {
+        usersSale[log.userId] += value
+      } else {
+        usersSale[log.userId] = 0
+      }
+    })
+    return db.collection('users').get().then(result => {
+      result.forEach(userRef => {
+        const { uid, name } = userRef.data()
+        finalResult[name] = usersSale[uid]
+      })
+      return res.json(finalResult)
+    })
+  })
+})
+
 exports.initialState = functions.https.onRequest((req, res) => {
   const statRef = db.collection('stats').doc('2018')
   return db
