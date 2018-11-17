@@ -12,11 +12,37 @@ import firebase from 'firebase/app'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import FormControl from '@material-ui/core/FormControl'
 import SearchIcon from '@material-ui/icons/Search'
+import ContentLoader from 'react-content-loader'
 import Fuse from 'fuse.js'
 
 require('firebase/firestore')
 
-const loader = null
+const loader = (
+  <ContentLoader
+    height={160}
+    width={400}
+    speed={2}
+    primaryColor="#f3f3f3"
+    secondaryColor="#ecebeb"
+  >
+    <circle cx="54.12" cy="38.12" r="25.12" /> 
+		<rect x="96" y="13.69" rx="5" ry="5" width="266.2" height="12.1" /> 
+		<circle cx="638" cy="67" r="8" /> 
+		<rect x="653" y="62" rx="5" ry="5" width="220" height="10" /> 
+		<circle cx="638" cy="97" r="8" /> 
+		<rect x="653" y="92" rx="5" ry="5" width="220" height="10" /> 
+		<circle cx="638" cy="127" r="8" /> 
+		<rect x="653" y="122" rx="5" ry="5" width="220" height="10" /> 
+		<rect x="651" y="150" rx="5" ry="5" width="220" height="10" /> 
+		<circle cx="638" cy="154" r="8" /> 
+		<circle cx="54.12" cy="103.12" r="25.12" /> 
+		<rect x="97" y="79.69" rx="5" ry="5" width="266.2" height="12.1" /> 
+		<circle cx="54.12" cy="166.12" r="25.12" /> 
+		<rect x="98" y="144.69" rx="5" ry="5" width="266.2" height="12.1" /> 
+		<circle cx="57.12" cy="230.12" r="25.12" /> 
+		<rect x="97" y="203.69" rx="5" ry="5" width="266.2" height="12.1" />
+  </ContentLoader>
+)
 
 class UserRoleList extends Component {
   state = {
@@ -77,7 +103,7 @@ class UserRoleList extends Component {
   handleSearchFor = itens => {
     const fuse = new Fuse(itens, { threshold: 0.3, keys: ['name', 'email'] })
     return e => {
-      const searchTerm = e.target.value
+      const searchTerm = String(e.target.value)
       const userIdsShowed = fuse.search(searchTerm).map(item => item.uid)
       this.setState({ searchTerm, userIdsShowed })
     }
@@ -125,9 +151,8 @@ class UserRoleList extends Component {
   }
 
   render = () => {
-    const { users, userIdsShowed, loading, searchTerm, usersIds} = this.state
+    const { users, userIdsShowed, loading, searchTerm, usersIds } = this.state
     if (loading) return loader
-    if (!!searchTerm.trim() && !userIdsShowed.length) return null
     const userIdsUsed = searchTerm.trim() ? userIdsShowed : usersIds
     return (
       <div>

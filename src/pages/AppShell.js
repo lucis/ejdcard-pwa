@@ -108,7 +108,7 @@ const styles = theme => ({
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'end',
+    justifyContent: 'flex-end'
   },
 })
 
@@ -220,7 +220,7 @@ class AppShell extends React.Component {
             <div className={classes.userDiv}>
               <ListItem>
                 <Avatar alt={name} src={picUrl} />
-                <ListItemText primary={name} secondary={email} />
+                <ListItemText primary={name} />
               </ListItem>
             </div>
           )}
