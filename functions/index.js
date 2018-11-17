@@ -88,10 +88,10 @@ exports.getBestSalespersons = functions.https.onRequest((_, res) => {
     result.forEach(docRef => {
       const log = docRef.data()
       const value = log.balanceBefore - log.balanceAfter
-      if (!Number.isNaN(usersSale[log.userId])) {
+      if (usersSale[log.userId]) {
         usersSale[log.userId] += value
       } else {
-        usersSale[log.userId] = 0
+        usersSale[log.userId] = value || 1
       }
     })
     return db.collection('users').get().then(result => {
