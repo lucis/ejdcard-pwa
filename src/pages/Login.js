@@ -95,10 +95,11 @@ class Login extends Component {
             userFromDb = snap.data()
           })
 
-          await db
-            .collection('users')
-            .doc(user.uid)
-            .set({ lastLogin: Date.now() }, { merge: true })
+          // Improve refresh time
+          // await db
+          //   .collection('users')
+          //   .doc(user.uid)
+          //   .set({ lastLogin: Date.now() }, { merge: true })
         }
         setUser(userFromDb)
         this.setState({
