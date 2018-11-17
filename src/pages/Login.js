@@ -81,7 +81,7 @@ class Login extends Component {
             name: displayName,
             email,
             picUrl: photoURL,
-            roles: 'r',
+            // roles: 'r',
             lastLogin: Date.now(),
             createdAt: Date.now(),
           }

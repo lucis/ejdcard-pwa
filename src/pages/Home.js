@@ -77,7 +77,7 @@ const Home = (props) => {
       },
     ]
     return options
-      .filter(({ role }) => roles.includes(role))
+      .filter(({ role = 'r' }) => roles.includes(role))
       .map(({ title, subtitle, path }, key) => (
         <Card
           className="pointer mt2 w5-ns"
