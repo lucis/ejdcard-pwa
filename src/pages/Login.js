@@ -15,16 +15,15 @@ import {
 import { Redirect } from 'react-router-dom'
 import { withUser } from '../contexts/AuthContext'
 import { withLoading } from '../contexts/LoadingContext'
+import StepperInicial from '../components/StepperInicial'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 require('firebase/firestore')
 
 const styles = theme => ({
-  root: {
-    backgrounColor: theme.palette.primary.dark
-  },
   main: {
     width: 'auto',
+    height: '100%',
     display: 'block', // Fix IE 11 issue.
     marginLeft: theme.spacing.unit * 3,
     marginRight: theme.spacing.unit * 3,
@@ -41,8 +40,11 @@ const styles = theme => ({
     alignItems: 'center',
     padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
       .spacing.unit * 3}px`,
-    marginBottom: `${theme.spacing.unit * 4}px`
+    marginBottom: `${theme.spacing.unit * 4}px`,
   },
+  link: {
+    color: theme.palette.primary.main
+  }
 })
 
 const db = firebase.firestore()
@@ -63,10 +65,6 @@ class Login extends Component {
       location: { state },
     } = this.props
     showLoading()
-    // Remove the 'false' if too much login attempts are happening
-    if (false && userFromContext) {
-      return this.setState({ redirectTo: { pathname: '/app' } })
-    }
 
     firebase.auth().onAuthStateChanged(async user => {
       if (user) {
@@ -87,10 +85,8 @@ class Login extends Component {
             name: displayName,
             email,
             picUrl: photoURL,
-            authorized: false,
             roles: 'r',
             lastLogin: Date.now(),
-            isAdmin: false,
             createdAt: Date.now(),
           }
           userFromDb = newUserData
@@ -109,7 +105,9 @@ class Login extends Component {
             .set({ lastLogin: Date.now() }, { merge: true })
         }
         setUser(userFromDb)
-        this.setState({ redirectTo: (state && state.from) || { pathname: '/app' } })
+        this.setState({
+          redirectTo: (state && state.from) || { pathname: '/app' },
+        })
         hideLoading()
       } else {
         hideLoading()
@@ -141,55 +139,37 @@ class Login extends Component {
     }
     return (
       <div className={classes.root}>
-      <main className={classes.main}>
-        <CssBaseline />
-        <Paper className={classes.paper}>
-          <div className="w-90 pa2">
-            <img src={require('../images/logo_largo_05x.png')} alt="EJD Card" />
-          </div>
-          <Typography variant="subtitle1">Faça login para utilizar</Typography>
-          <FacebookLoginButton
-            style={socialButtonSytle}
-            onClick={this.loginWithFacebook}
-          >
-            <span className="tc pl2 f6">Entre com Facebook</span>
-          </FacebookLoginButton>
-          <GoogleLoginButton
-            style={socialButtonSytle}
-            onClick={this.loginWithGoogle}
-          >
-            <span className="tc pl2 f6">Entre com Google</span>
-          </GoogleLoginButton>
-          <Typography variant="subtitle1" className="pt2">
-            ou
-          </Typography>
-          <form className={classes.form}>
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="email">digite seu e-mail</InputLabel>
-              <Input id="email" name="email" autoComplete="email" autoFocus />
-            </FormControl>
-            <FormControl margin="none" required fullWidth>
-              <InputLabel htmlFor="password">digite sua senha</InputLabel>
-              <Input
-                name="password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                className="mb4"
+        <main className={classes.main}>
+          <CssBaseline />
+          <Paper className={classes.paper}>
+            <div className="w-90 pa2">
+              <img
+                src={require('../images/logo_largo_05x.png')}
+                alt="EJD Card"
               />
-            </FormControl>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
+            </div>
+            <Typography variant="subtitle2" color="primary" align="center">
+              Pagamentos no Encontrão EJD 2018
+            </Typography>
+            <StepperInicial />
+            <Typography variant="subtitle2">
+              Faça login para utilizar
+            </Typography>
+            <FacebookLoginButton
+              style={socialButtonSytle}
+              onClick={this.loginWithFacebook}
             >
-              Login
-            </Button>
-          </form>
-        </Paper>
-      </main>
+              <span className="tc pl2 f6">Entre com Facebook</span>
+            </FacebookLoginButton>
+            <GoogleLoginButton
+              style={socialButtonSytle}
+              onClick={this.loginWithGoogle}
+            >
+              <span className="tc pl2 f6">Entre com Google</span>
+            </GoogleLoginButton>
+            <Typography style={{marginTop: 10}} variant="subtitle2" align="center">Desenvolvido com {"<3"} por <a className={classes.link} target="_blank" href="https://instagram.com/luciannojunior">@luciannojunior</a></Typography>
+          </Paper>
+        </main>
       </div>
     )
   }
