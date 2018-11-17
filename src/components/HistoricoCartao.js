@@ -59,7 +59,13 @@ class HistoricoCartao extends Component {
     query.forEach(docRef => {
       historico.push({ ...docRef.data(), id: docRef.id })
     })
-    this.setState({ historico })
+    const historicoTurbinado = await Promise.all(historico.map((log) => {
+      const { userId } = log
+      return db.collection('users').doc(userId).get().then(docRef => {
+        return {...log, user: docRef.data().name}
+      })
+    }))
+    this.setState({ historico: historicoTurbinado })
   }
 
   render = () => {
@@ -76,11 +82,12 @@ class HistoricoCartao extends Component {
               <TableCell>Operação</TableCell>
               <TableCell>Valor</TableCell>
               <TableCell>Hora</TableCell>
+              <TableCell>Operador</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {historico
-              .map(({ type, balanceBefore, balanceAfter, timestamp, id }) => ({
+              .map(({ type, balanceBefore, balanceAfter, timestamp, id, user }) => ({
                 operacao: {
                   c: 'Credenciamento',
                   v: 'Compra',
@@ -91,8 +98,9 @@ class HistoricoCartao extends Component {
                 hora: moment(timestamp).format('DD/MM/YYYY kk:mm'),
                 color: 'cu'.includes(type) ? 'secondary' : 'error',
                 id,
+                user
               }))
-              .map(({ id, operacao, valor, hora, color }) => {
+              .map(({ id, operacao, valor, hora, color, user }) => {
                 return (
                   <TableRow key={id}>
                     <TableCell>{operacao}</TableCell>
@@ -106,6 +114,11 @@ class HistoricoCartao extends Component {
                       </Typography>
                     </TableCell>
                     <TableCell>{hora}</TableCell>
+                    <TableCell>
+                    <Typography align='center'>
+                    {user}
+                    </Typography>
+                    </TableCell>
                   </TableRow>
                 )
               })}

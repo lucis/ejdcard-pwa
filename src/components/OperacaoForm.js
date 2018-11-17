@@ -267,7 +267,7 @@ class OperacaoForm extends Component {
           <Button
             variant="contained"
             color="primary"
-            disabled={!this.checkValid()}
+            disabled={!this.checkValid() || loadingOperation}
             onClick={this.handleSubmit}
           >
             {loadingOperation && (
