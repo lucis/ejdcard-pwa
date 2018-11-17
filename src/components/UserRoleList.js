@@ -76,7 +76,6 @@ class UserRoleList extends Component {
   }
 
   handleSearchFor = itens => {
-    console.log(itens)
     const fuse = new Fuse(itens, { threshold: 0.3, keys: ['name', 'email'] })
     return e => {
       const searchTerm = e.target.value

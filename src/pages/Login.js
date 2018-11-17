@@ -20,6 +20,9 @@ import 'firebase/auth'
 require('firebase/firestore')
 
 const styles = theme => ({
+  root: {
+    backgrounColor: theme.palette.primary.dark
+  },
   main: {
     width: 'auto',
     display: 'block', // Fix IE 11 issue.
@@ -137,6 +140,7 @@ class Login extends Component {
       marginTop: '1rem',
     }
     return (
+      <div className={classes.root}>
       <main className={classes.main}>
         <CssBaseline />
         <Paper className={classes.paper}>
@@ -186,6 +190,7 @@ class Login extends Component {
           </form>
         </Paper>
       </main>
+      </div>
     )
   }
 }
