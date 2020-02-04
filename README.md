@@ -1,8 +1,12 @@
 ## EJD Card
 
-Sistema integrado de pagamentos para evento interno. Feito para o Encontrão EJD da cidade de Campina Grande - PB
+Sistema integrado de pagamentos para evento interno.
 
-<img src="https://i.imgur.com/vfn607N.png" width="200" alt="EJDCard"/>
+> Feito para o Encontrão EJD da cidade de Campina Grande - PB
+
+<p align="center">
+  <img src="https://i.imgur.com/vfn607N.png" width="200" alt="EJDCard"/>
+</p>
 
 ## Autenticação
 - Por default é usado o **Firebase Auth** com os providers Google e Facebook. Para usar o serviço de login do Google, automaticamente o Firebase configura tudo, mas para usar o login social do Facebook **é necessário configurar** algumas coisas, o que envolve criar uma app no portal de desenvolvedores do Facebook, ativar o serviço de login e especificar a URL onde o sistema está deployado. Devem haver vários tutoriais sobre como fazer isso (Firebase Auth and Facebook)
