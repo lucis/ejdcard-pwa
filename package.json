@@ -7,7 +7,7 @@
     "@material-ui/icons": "^3.0.1",
     "firebase": "^5.5.7",
     "fuse.js": "^3.3.0",
-    "lodash": "^4.17.13",
+    "lodash": "^4.17.19",
     "moment": "^2.22.2",
     "numero-por-extenso": "^1.0.5",
     "react": "^16.6.1",
